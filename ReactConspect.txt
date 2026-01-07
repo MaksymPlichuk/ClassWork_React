@@ -4008,5 +4008,96 @@ powershell in folder -->
 		npm i -->	npm run dev
 	
 	
+----------------------------------------------
+02_Components
+
+ navbar footer	--	не змінюються
+ 
+ компоненти пишуться з великої букви
+		назва компоненту == назві файлу
+		
+main	--	не є компонентом
+		
+ const Header = () => {
+ 
+ 
+	return (
+  <div>	
+	<div className="header">
+	<h3>React lesson 2</h3>
+  </div>	
+);
+
+export default Header;	--	без нього інший файл не буде бачити цей компонент		
+		
+ 
+import Header from './components/Header.jsx';	--	 імпортуємо Header
+	тобто створ змінну Header | Header() -- викликаємо цю функцію
+
+ 
+	function App() {
+ return(
+ <>
+	<Header />	-- намалює хедер 
+ 
+ </>
+
+	===Старий метод===
+
+import { Component) from "react";
+
+class Header extends Component {
+	render() {
+		return (
+			<div className="header">
+			<h3>React lesson 2</h3>
+			</div>
+		)
+	}
+}
+
+компоненти -- функції
+
+../	--	айти в батківську папку
+
+
+export default	-- може бути тільки 1 експорт за заумовчуванням 
+
+
+import name from `./pages/MainPage`	--	створ змінну name з дефолтного експорту
+
+
+export const CircleButton () => {
+	return (
+	<button>Circle</button>
+	)
+}
+
+
+import as customButtons from './../components/buttons';	--	об'єкт із всіма елементами
+
+						можна передавати параметри
+export const CircleButton = (props) => {
+	return (
+		<button className="circle">
+			{props.text}
+		</button>
+	)
+}
+
+	 ---Деструктуризація---
+
+	export const CircleButton = ({text, color, size}) => {
+		return (
+			<button className="circle">
+				{text}
+			</button>
+			)
+	}
+	
+<CircleButton text="Кругла кнопка" сolor="yellow" size="2em" />
+
+	
+	
 	
 	
