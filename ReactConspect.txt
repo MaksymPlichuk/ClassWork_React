@@ -4011,16 +4011,23 @@ powershell in folder -->
 ----------------------------------------------
 02_Components
 
+	компоненти -- частини сайту (у MPA кожна сторінка)
+
+	
  navbar footer	--	не змінюються
  
  компоненти пишуться з великої букви
 		назва компоненту == назві файлу
 		
-main	--	не є компонентом
 		
- const Header = () => {
- 
- 
+		
+main	--	не є компонентом
+	
+	
+ const Header = () => {			або function Header() {
+  
+  //тут можна писати логіку для компонента
+  
 	return (
   <div>	
 	<div className="header">
@@ -4030,7 +4037,8 @@ main	--	не є компонентом
 
 export default Header;	--	без нього інший файл не буде бачити цей компонент		
 		
- 
+		
+	 //можна писати будьщо 
 import Header from './components/Header.jsx';	--	 імпортуємо Header
 	тобто створ змінну Header | Header() -- викликаємо цю функцію
 
@@ -4063,29 +4071,44 @@ class Header extends Component {
 
 export default	-- може бути тільки 1 експорт за заумовчуванням 
 
-
 import name from `./pages/MainPage`	--	створ змінну name з дефолтного експорту
 
 
-export const CircleButton () => {
+
+export const CircleButton () => {	-- зразу експортує
 	return (
 	<button>Circle</button>
 	)
 }
 
+																					///import customButtons from './../components/buttons';	--	об'єкт (customButtons) з всіма елементами
+	import { CircleButton, RectButton} from './../components/buttons';	-- 2 об'єкта
+		
+				<RectButton />	-- намалює об'єкт
+				
+		import * as customButtons from './../components/buttons';	-- об'єкт (customButtons) з всіма елементами		
+				customButtons.RectButton
 
-import as customButtons from './../components/buttons';	--	об'єкт із всіма елементами
+
 
 						можна передавати параметри
 export const CircleButton = (props) => {
 	return (
 		<button className="circle">
-			{props.text}
-		</button>
-	)
+			{props.text}				--у props немає таких властивостей вони створюються при визові
+			{props.color}		функції нижще
+		</button>							--<RectButton text="test" color="test/>
+	)						
 }
 
 	 ---Деструктуризація---
+
+export const CircleButton = (props) => {
+	const { text } = props;
+	return (
+		{text}....
+
+				--Або Зразу--
 
 	export const CircleButton = ({text, color, size}) => {
 		return (
@@ -4094,7 +4117,7 @@ export const CircleButton = (props) => {
 			</button>
 			)
 	}
-	
+		//має співпадати з {text..
 <CircleButton text="Кругла кнопка" сolor="yellow" size="2em" />
 
 	
