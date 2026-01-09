@@ -4121,6 +4121,92 @@ export const CircleButton = (props) => {
 <CircleButton text="Кругла кнопка" сolor="yellow" size="2em" />
 
 	
+----------------------------------------------
+03_UseState  Style 	
+	
+  для окремих компонентів своя папка
+	
+	
+style { {} --	створ об'єки з стилями}	
+	
+	
+const navbarStyles = {
+	height: "80px",
+	backgroundColor: "grey",
+	display: "flex",
+};
+
+<div style ={navbarStyles}	--	надає стилізацію
+	
+	
+	можна винести в JS файл і потім експортувати та імпортнути	
+	
+ import { navbarStyles, navlinksStyles, authNavStyles from "./styles";
+	
+export const navbarStyles = {
+	height: "80px",
+	backgroundColor: "grey",
+	display: "flex",
+	alignItems: "center"
+};	
+	
+<div style={{margin: 24px 0px">
+	<button onClick=(changeColorHandle}>Change color</button>
+</div>	
+	
+	
+		let color="green";
+	const changeColorHandle = () => {
+		color "yellow";
+	}
+
+getElementByID	--	на react неправильно	
+	
+	
+  --Component rendering--
+  
+  зміна функції не впливає на рендер компонента (функція змінює колір але не перемальовує об'єкт)
+						щоб це зробити є hook
+						
+  hook	-- функція яка дає отримувати реактовський функціонал						
+	в назві слово use (useState, useEffect)	-- заміна document.getElem...
 	
 	
 	
+1. useState	-- хук який відповідає за стан компоненту	
+	
+	
+ стан	-- поза рендерои, рендер не впливає на стан
+	
+	
+render компонентів через зміну його станів	
+	
+ //імпортуємо useState	
+	import { useState } from "react"
+
+	//деструктьуризація				//початкове значення
+ const [color,setColor] = useState("green")
+		змнна	для зміни
+	
+ const changeColorHandle = () => {
+	setColor("yellow");		--	передаємо нове значення для 
+				константи color
+}
+
+
+const [color,setColor] = useState("green")	-- відбув ререндер
+	існує по за малюванням компонента
+
+
+	const changeColor1Handle = () {
+		const randomColor = randomRgb();
+		setFirstColor(randomColor);	-- тут відбув рендер
+	}
+
+								//значення при першому малюванні
+const [inputText, setInputText] = useState("ddd");
+	зберіг значення    функція яка змін значення state
+
+
+
+
