@@ -1,0 +1,10 @@
+В проекті https://github.com/potapchukdmytro/React_pd411/tree/main/books_shop додати компонент який малює список авторів.
+Автор повинен містити
+	- id
+	- firstName
+	- lastName
+	- birthday
+	- country
+	- image
+	
+Повинен бути масив мінімум на 20 авторів
