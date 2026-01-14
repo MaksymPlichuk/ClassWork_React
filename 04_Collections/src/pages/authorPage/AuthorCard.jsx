@@ -14,7 +14,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 
-const BookCard = ({ book }) => {
+const AuthorCard = ({ author }) => {
     const [isFavorite, setIsFavorite] = useState(false);
 
     return (
@@ -24,7 +24,7 @@ const BookCard = ({ book }) => {
                     <Avatar
                         sx={{ bgcolor: red[500] }}
                         aria-label="recipe"
-                        src="https://knu.ua/img/kobzar.jpg"
+                        src={author.imageUrl ? author.imageUrl : "https://media.istockphoto.com/id/1016744034/vector/profile-placeholder-image-gray-silhouette-no-photo.jpg?s=612x612&w=0&k=20&c=Rqti26VQj_fs-_hL15mJj6b84FEZNa00FJgZRaG5PD4="}
                     ></Avatar>
                 }
                 action={
@@ -32,21 +32,21 @@ const BookCard = ({ book }) => {
                         <MoreVertIcon />
                     </IconButton>
                 }
-                title={book.title}
-                subheader={book.authorName}
+                title={author.firstName + " " + author.lastName}
+                subheader={author.author}
             />
             <CardMedia
                 sx={{ objectFit: "contain" }}
                 component="img"
                 height="350"
                 image={
-                    book.coverUrl ? book.coverUrl : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
+                    author.imageUrl ? author.imageUrl : "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-18055.jpg"
                 }
-                alt={book.title}
+                alt={author.firstName}
             />
             <CardContent>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {book.genre}, {book.year}
+                    {author.country}, {author.birthday}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
@@ -62,4 +62,4 @@ const BookCard = ({ book }) => {
         </Card>
     );
 }
-export default BookCard;
+export default AuthorCard;

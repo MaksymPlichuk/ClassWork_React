@@ -1,20 +1,20 @@
 import { Box, Grid } from "@mui/material";
-import BookCard from "./BookCard";
-import books from "./books.json"
+import AuthorCard from "./AuthorCard";
+import authors from "./authors.json"
 
-const BookListPage = () => {
+const AuthorListPage = () => {
     return (
         <Box
             sx={{ display: "flex", alignItems: "center", flexDirection: "column", }}>
             
             <Grid container spacing={2} mx="100px" my="50px">
-                {books.map((b) => (
+                {authors.map((b) => (
                     <Grid size={3} key={b.id}>
-                        <BookCard book={b} />
+                        <AuthorCard author={b} />
                     </Grid>
                 ))}
             </Grid>
         </Box>
     );
 }
-export default BookListPage;
+export default AuthorListPage;
