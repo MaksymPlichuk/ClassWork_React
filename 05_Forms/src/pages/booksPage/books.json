@@ -1,0 +1,182 @@
+[
+    {
+        "id": 1,
+        "title": "Місто",
+        "year": "1928",
+        "coverUrl": "https://static.yakaboo.ua/media/cloudflare/product/webp/600x840/i/n/index_10_10.jpg",
+        "authorId": 1,
+        "authorName": "Валер'ян Підмогильний",
+        "genre": "Модерністський роман"
+    },
+    {
+        "id": 2,
+        "title": "Intermezzo",
+        "year": "1908",
+        "coverUrl": "https://4read.org/uploads/posts/2021-04/1618084793_intermezzo.jpg",
+        "authorId": 2,
+        "authorName": "Михайло Коцюбинський",
+        "genre": "Імпресіоністична новела"
+    },
+    {
+        "id": 3,
+        "title": "Лісова пісня",
+        "year": "1911",
+        "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmSTuxEGhHhWGJ58eZSjxly_r64kcZyifvJw&s",
+        "authorId": 3,
+        "authorName": "Леся Українка",
+        "genre": "Драма-феєрія"
+    },
+    {
+        "id": 4,
+        "title": "Камінний хрест",
+        "year": "1900",
+        "coverUrl": "https://nashformat.ua/files/products/ebook-kaminnyj-hrest-628084.800x800.jpeg",
+        "authorId": 4,
+        "authorName": "Василь Стефаник",
+        "genre": "Психологічна новела"
+    },
+    {
+        "id": 5,
+        "title": "Чорна рада",
+        "year": "1857",
+        "coverUrl": "https://upload.wikimedia.org/wikipedia/uk/thumb/1/13/Pan%27ko_Kulish_-_Chorna_rada_%28palityrka_vyd._1857%2C_UKR%29.jpg/250px-Pan%27ko_Kulish_-_Chorna_rada_%28palityrka_vyd._1857%2C_UKR%29.jpg",
+        "authorId": 5,
+        "authorName": "Пантелеймон Куліш",
+        "genre": "Історичний роман"
+    },
+    {
+        "id": 6,
+        "title": "Я (Романтика)",
+        "year": "1924",
+        "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfPCYbERgrm59iA39Xp6k2xA2Td6ensVqjBA&s",
+        "authorId": 6,
+        "authorName": "Микола Хвильовий",
+        "genre": "Новела"
+    },
+    {
+        "id": 7,
+        "title": "Жовтий князь",
+        "year": "1963",
+        "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0T61qSE5h3liQKJdRhGa28IsVrr5qyDQ6uA&s",
+        "authorId": 7,
+        "authorName": "Василь Барка",
+        "genre": "Історичний роман"
+    },
+    {
+        "id": 8,
+        "title": "Собор",
+        "year": "1968",
+        "coverUrl": "https://static.yakaboo.ua/media/cloudflare/product/webp/352x340/5/a/5aa244d0-49fb-4b77-88b7-a6328b406cb0.jpeg",
+        "authorId": 8,
+        "authorName": "Олесь Гончар",
+        "genre": "Філософський роман"
+    },
+    {
+        "id": 9,
+        "title": "Зачарована Десна",
+        "year": "1956",
+        "coverUrl": "https://dovidka.biz.ua/wp-content/uploads/2014/02/zacharovana-desna.jpg",
+        "authorId": 9,
+        "authorName": "Олександр Довженко",
+        "genre": "Автобіографічна повість"
+    },
+    {
+        "id": 10,
+        "title": "Майстер корабля",
+        "year": "1928",
+        "coverUrl": "https://knigoed.club/uploads/posts/books/1/1/1/skorocheno-majster-korablya.jpg",
+        "authorId": 10,
+        "authorName": "Юрій Яновський",
+        "genre": "Мариністичний роман"
+    },
+    {
+        "id": 11,
+        "title": "Тигролови",
+        "year": "1944",
+        "coverUrl": "https://static.yakaboo.ua/media/cloudflare/product/webp/600x840/c/o/cover_83_48.jpg",
+        "authorId": 11,
+        "authorName": "Іван Багряний",
+        "genre": "Пригодницький роман"
+    },
+    {
+        "id": 12,
+        "title": "Енеїда",
+        "year": "1798",
+        "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMMr86_Ex87d5EQeSHZcRrpssLtFeLv9hB7Q&s",
+        "authorId": 12,
+        "authorName": "Іван Котляревський",
+        "genre": "Бурлескно-травестійна поема"
+    },
+    {
+        "id": 13,
+        "title": "Кайдашева сім'я",
+        "year": "1879",
+        "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpOu7yPndM-QmrlViBFA8uciWMhRV9icVuVA&s",
+        "authorId": 13,
+        "authorName": "Іван Нечуй-Левицький",
+        "genre": "Соціально-побутова повість"
+    },
+    {
+        "id": 14,
+        "title": "Перехресні стежки",
+        "year": "1900",
+        "coverUrl": "https://dovidka.biz.ua/wp-content/uploads/2015/11/perehresni-stezhki-franko-e1649749616170.jpg",
+        "authorId": 14,
+        "authorName": "Іван Франко",
+        "genre": "Психологічна повість"
+    },
+    {
+        "id": 15,
+        "title": "Відьма",
+        "year": "1838",
+        "coverUrl": "https://diasporiana.org.ua/wp-content/uploads/books/3608/image.jpg",
+        "authorId": 15,
+        "authorName": "Тарас Шевченко",
+        "genre": "Поема"
+    },
+    {
+        "id": 16,
+        "title": "Сто тисяч",
+        "year": "1891",
+        "coverUrl": "https://vivat.com.ua/storage/1.d/files/5/3/53502081_1.png",
+        "authorId": 20,
+        "authorName": "Іван Карпенко-Карий",
+        "genre": "Драма"
+    },
+    {
+        "id": 17,
+        "title": "Цар Плаксій та Лоскотон",
+        "year": "1963",
+        "coverUrl": null,
+        "authorId": 19,
+        "authorName": "Василь Симоненко",
+        "genre": "Гумористична література"
+    },
+    {
+        "id": 18,
+        "title": "Земля",
+        "year": "1902",
+        "coverUrl": null,
+        "authorId": 16,
+        "authorName": "Ольга Кобилянська",
+        "genre": "Соціально-психологічна повість"
+    },
+    {
+        "id": 19,
+        "title": "Інтернаціоналізм чи русифікація?",
+        "year": "1968",
+        "coverUrl": "https://upload.wikimedia.org/wikipedia/uk/3/30/Dzuba_Book.jpeg",
+        "authorId": 17,
+        "authorName": "Іван Дзюба",
+        "genre": "науково-публіцистична робота"
+    },
+    {
+        "id": 20,
+        "title": "Хіба ревуть воли, як ясла повні?",
+        "year": "1880",
+        "coverUrl": null,
+        "authorId": 18,
+        "authorName": "Панас Мирний",
+        "genre": "Соціально-психологічний роман"
+    }
+]

@@ -4393,4 +4393,83 @@ import { Box, Typography,Grid } from "@mui/material";
 			перетворює div на img 
 		<Box component="img" src=""/>
 		
+----------------------------------------------
+05_Forms
+
+ <Box component ="form"	--	mui form
+ 
+ label,input	--	inline компоненти 
+ 
+  <FormControl	--	робить елемннти flex block
+
+<TextLable	==	lable
+<TextField	==	input
+	name=""	--	для того щоб доступитися до елемента
+
+
+autofocus	--	вибраний інпут при заході на сторінку	
+
+ tab -- змінити фокус 
+ shift+tab -- навпаки фокус вниз
+
+<Button type="submit"	--	onSumbit={handleSumbit}
+
+  оптимізованіший варіант для інпутів
+					всі в 1 об'єкті
+  
+ const [values, setValues] = useState({
+	title: " "	-- дефолтне значення
+	..
+}); 
+
+					об'єкт копіююєттся і змін тільки title
+onChange={ event => setValues ( {...values, title: event.target.value} ) }
+ value={values.title}
+
+
+
+npm formik
+	yup
+	
+https://formik.org/docs/tutorial	--	бібліотека для роботи з формами	
+	
+
+ let formik = useFormik({
+	initialValues:
+		title: "",	-- має обов'язково співпадати з type
+		author:..
 		
+	onSubmit: handleSubmit,	-- функція при submit
+ })
+
+		//отримає всі значення
+const handleSubmit = (values) => {
+	console.log(values);
+};
+	
+ прив'язуємо input
+	value=[formik.values.title}
+	onChange={formik.handleChange)
+	
+
+	yup	--	валідація
+			
+ if	--	тернарний оператор
+
+	на форму нажали			є помилка у genre | перевір від yup
+formik.touched.genre && formik.errors.genre ? (
+
+	<Typography sx={{ mx: 1, color:"red" }}
+	 variant="h7"
+		{formik.errors.genre}
+	</Typography>
+	: null		) }	
+			
+
+const getError = (prop) =>
+{
+	formik.errors[prop];	-- знайде якщо буде назва співпадати
+	formik.errors.prop;	-- незпрацює
+
+			
+			
