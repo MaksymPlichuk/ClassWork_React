@@ -4556,5 +4556,100 @@ const getError = (prop) =>
 	
 	
 ----------------------------------------------
-06_UseEffect	
+06_UseEffect LocalStorage
+
+
+ JSON -- seeder
+
+				//щоб пройтись по масиву
+const [books, setBooks] = useState( [] );
+
+	--помилка вічний цикл тому запихуємо у функцію
+
+const fetchBooks = () => {
+	const localData = localStorage.getItem("books");
+		if(localData) {
+		setBooks (JSON.parse(localData));
+	} else {
+		setBooks (booksJson);			
+		localStorage.setItem("books", JSON.stringify(booksJson));
+}
+
+ useEffect	--	hook для того щоб виконати 
+					код при першому заході на сайт може бути багато з різними []
+
+useEffect(fetchBooks, [])	-- старий варіант
+useEffect(()=>{....}, [])
+
 	
+useEffect(fetchBooks)	-- без [] хук буде використ у подальших рендерах і від нього не буде сенсу
+	тому передаємо [] щоб useEffect працювалось лише при 1 малюванні
+	
+		
+
+   [ count1,count2 ]	--	значення від яких залежить useEffect 
+	якщо вони знміняться то він спрацює щераз ПРИ змінні будь якого значення
+використовується у Pagination (змін page витягується нові данні через useEffect)
+
+	тому з []	-- спрацює при першом малюванні
+	
+	
+	
+				//у власи компонента як props предаємо функцію
+<BookCreateForm createCallback={addNewBook}	
+			//createCallback	--	назва проперті можна будь як
+								пропс у якій лежить адреса функції  addNewBook
+							
+
+const BookCreateForm = ({createCallback}) => {
+	const handleSubmit = (values) => {
+	 createCallback(values);		--	через покажчики викликає ф-цію у батьківському компоненті BookListPage
+			//викличе addNewBook
+	};
+
+
+з батьківсько в дочірній	--	props
+з форми в ліст (навпаки)	--	callBack	| пеоедаємо адресу функціїї і її викликаємо
+
+--
+
+function bookList()
+	const list = [2, 3];
+	function addNew(value) {
+		list.push(value);
+	}
+	form();
+}	
+function form() {
+	const book = 1;	-- щоб передати її у bookList викор callBack
+}
+
+
+	function bookList()
+		const list = [2, 3];
+		function addNew(value) {
+			list.push(value);
+		}
+		form(addNew);	-- передаємо адресу addNew
+		
+	}
+				//будь яка назва, це ми передаємо addNew
+	function form(addCallBack) {
+		const book = 1;
+		addCallBack(book)	-- викличеться addNew у bookList
+	}
+
+--
+
+const addNewBook = (newBook) => {
+	//setBooks([...books, newBook]);	--	додавання нової книги
+	
+	const newList = [...books, newBook];
+	setBooks (newList);						--	для коду
+	localStorage(JSON.stringify(newList));
+}
+
+const deleteBook = (id) => {
+	const newList = books.filter(b=> b.id !== id);	--	
+}
+
