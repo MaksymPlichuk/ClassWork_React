@@ -63,6 +63,7 @@ const initValues = {
 const BookCreateForm = () => {
     const handleSubmit = (values) => {
         console.log(values);
+        //add
     };
 
     const getError = (prop) => {
@@ -73,7 +74,6 @@ const BookCreateForm = () => {
         ) : null;
     };
 
-    // validation scheme
     const maxYear = new Date().getFullYear();
     const validationScheme = object({
         title: string()
@@ -89,7 +89,6 @@ const BookCreateForm = () => {
             .required("Обов'язкове поле"),
     });
 
-    // formik
     const formik = useFormik({
         initialValues: initValues,
         onSubmit: handleSubmit,
@@ -176,7 +175,6 @@ const BookCreateForm = () => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {/* error */}
                             {getError("year")}
                         </FormControl>
                         <FormControl>

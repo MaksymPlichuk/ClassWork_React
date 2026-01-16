@@ -4396,11 +4396,14 @@ import { Box, Typography,Grid } from "@mui/material";
 ----------------------------------------------
 05_Forms
 
+mui templates 	--	взяти готовий компонент
+
+
  <Box component ="form"	--	mui form
  
  label,input	--	inline компоненти 
  
-  <FormControl	--	робить елемннти flex block
+  <FormControl	--	робить елемннти flex block | div для input і label
 
 <TextLable	==	lable
 <TextField	==	input
@@ -4412,7 +4415,16 @@ autofocus	--	вибраний інпут при заході на сторінк
  tab -- змінити фокус 
  shift+tab -- навпаки фокус вниз
 
+
+
 <Button type="submit"	--	onSumbit={handleSumbit}
+
+const handleSumbit() {			-- старий метод роботи з формами
+	const form = event.target
+	const title = form[`title`].value
+}
+
+
 
   оптимізованіший варіант для інпутів
 					всі в 1 об'єкті
@@ -4421,6 +4433,7 @@ autofocus	--	вибраний інпут при заході на сторінк
 	title: " "	-- дефолтне значення
 	..
 }); 
+
 
 					об'єкт копіююєттся і змін тільки title
 onChange={ event => setValues ( {...values, title: event.target.value} ) }
@@ -4433,43 +4446,115 @@ npm formik
 	
 https://formik.org/docs/tutorial	--	бібліотека для роботи з формами	
 	
+	
+					// дефолтні значення
+ const initValues = {
+    title: "",	-- має обов'язково співпадати з name <TextField
+    author: "",
+    genre: "",
+    year: "",
+    cover: "",
+};
+	
+	
+	
+☑️ const formik = useFormik({	-- створюємо об'єкт який заміняє форми і валідацію
 
- let formik = useFormik({
-	initialValues:
-		title: "",	-- має обов'язково співпадати з type
-		author:..
-		
-	onSubmit: handleSubmit,	-- функція при submit
+	initialValues: initValues
+	
+	onSubmit: handleSubmit	-- функція при submit
+	
+	validationSchema: validationScheme,	-- об'єкт з валідацією
  })
-
-		//отримає всі значення
+	
+	
+		//отримає всі значення	від formik прописуємо логіку що робити далі з данними
 const handleSubmit = (values) => {
 	console.log(values);
 };
+
+	<Box onSubmit = {formik.handleSubmit}	--	formik вичитуэ значення і передає їх у вигляді obj
+											потім цей obj використовує наша функція handleSubmit
+											
+						formik	-- автоматично зробив preventDefault() вичитав всі данні і створив їх у obj
+								використано тільки 1 state
+				
 	
  прив'язуємо input
 	value=[formik.values.title}
-	onChange={formik.handleChange)
+	onChange={formik.handleChange}	--	Change який уже готовий від formik
 	
 
-	yup	--	валідація
+
+ ==	yup	--	валідація без if ==
 			
  if	--	тернарний оператор
 
-	на форму нажали			є помилка у genre | перевір від yup
-formik.touched.genre && formik.errors.genre ? (
 
-	<Typography sx={{ mx: 1, color:"red" }}
-	 variant="h7"
-		{formik.errors.genre}
-	</Typography>
-	: null		) }	
+ import { object, string, number } from "yup";	-- імпортуємо для валідації
+
+
+
+					  виклик ф-цію object яку будемо валідувати
+const validationScheme = object({
+        title: string()
+				.required("Обов'язкове поле")	//повідомлення при помилці
+				.max(100, "Максимальна довжина 100 символів"),
 			
+		author: string().max(100, "Максимальна довжина 100 символів"),
+		...
+	)}			// можна використовувати regex через .matches()
+		
 
+
+			//додаємо onBlur
+ <TextField...
+			 value={formik.values.title}
+             onChange={formik.handleChange}
+             onBlur={formik.handleBlur}		-- буде перевіряти інпут коли переключились на інший
+		/>
+		
+	{	-- тернарний оператор щоб вивисте помилку
+	
+		на форму нажали		 чи є помилка у genre | перевір від yup
+   formik.touched.genre && formik.errors.genre ? (
+	
+			 <Typography						-- h7 буде виводити помилку
+					sx = { {mx: 1 color:"red"}}
+					variant = "h7"	>
+				{formik.errors.genre}			--виведе помилку у genre
+			</Typography>
+				
+		)	//якщо все добре	
+		 : null }
+		
+	}	//щоб оптимізувати код можна винести цю перевірку у функцію getError
+	
+			
+	
 const getError = (prop) =>
 {
-	formik.errors[prop];	-- знайде якщо буде назва співпадати
-	formik.errors.prop;	-- незпрацює
+	// formik.errors[prop];	-- знайде якщо буде назва співпадати
+	// formik.errors.prop;	-- незпрацює бо немаэ проперті prop у initValues
+	
+	return formik.touched[prop] && formik.errors[prop] ? (
+            <Typography sx={{ mx: 1, color: "red" }} variant="h7">
+                {formik.errors[prop]}
+            </Typography>
+        ) : null;
 
+    };			
 			
 			
+<TextField...
+			 value={formik.values.title}
+             onChange={formik.handleChange}
+             onBlur={formik.handleBlur}
+		/>			
+			//назва власт
+	{ getError("title")}		
+	
+	
+----------------------------------------------
+06_UseEffect	
+	
