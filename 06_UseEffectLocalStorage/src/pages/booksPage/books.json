@@ -6,7 +6,8 @@
         "coverUrl": "https://static.yakaboo.ua/media/cloudflare/product/webp/600x840/i/n/index_10_10.jpg",
         "authorId": 1,
         "authorName": "Валер'ян Підмогильний",
-        "genre": "Модерністський роман"
+        "genre": "Модерністський роман",
+        "isFavorite": false
     },
     {
         "id": 2,
@@ -15,7 +16,8 @@
         "coverUrl": "https://4read.org/uploads/posts/2021-04/1618084793_intermezzo.jpg",
         "authorId": 2,
         "authorName": "Михайло Коцюбинський",
-        "genre": "Імпресіоністична новела"
+        "genre": "Імпресіоністична новела",
+        "isFavorite": false
     },
     {
         "id": 3,
@@ -24,7 +26,8 @@
         "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmSTuxEGhHhWGJ58eZSjxly_r64kcZyifvJw&s",
         "authorId": 3,
         "authorName": "Леся Українка",
-        "genre": "Драма-феєрія"
+        "genre": "Драма-феєрія",
+        "isFavorite": false
     },
     {
         "id": 4,
@@ -33,7 +36,8 @@
         "coverUrl": "https://nashformat.ua/files/products/ebook-kaminnyj-hrest-628084.800x800.jpeg",
         "authorId": 4,
         "authorName": "Василь Стефаник",
-        "genre": "Психологічна новела"
+        "genre": "Психологічна новела",
+        "isFavorite": false
     },
     {
         "id": 5,
@@ -42,7 +46,8 @@
         "coverUrl": "https://upload.wikimedia.org/wikipedia/uk/thumb/1/13/Pan%27ko_Kulish_-_Chorna_rada_%28palityrka_vyd._1857%2C_UKR%29.jpg/250px-Pan%27ko_Kulish_-_Chorna_rada_%28palityrka_vyd._1857%2C_UKR%29.jpg",
         "authorId": 5,
         "authorName": "Пантелеймон Куліш",
-        "genre": "Історичний роман"
+        "genre": "Історичний роман",
+        "isFavorite": false
     },
     {
         "id": 6,
@@ -51,7 +56,8 @@
         "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfPCYbERgrm59iA39Xp6k2xA2Td6ensVqjBA&s",
         "authorId": 6,
         "authorName": "Микола Хвильовий",
-        "genre": "Новела"
+        "genre": "Новела",
+        "isFavorite": false
     },
     {
         "id": 7,
@@ -60,7 +66,8 @@
         "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0T61qSE5h3liQKJdRhGa28IsVrr5qyDQ6uA&s",
         "authorId": 7,
         "authorName": "Василь Барка",
-        "genre": "Історичний роман"
+        "genre": "Історичний роман",
+        "isFavorite": false
     },
     {
         "id": 8,
@@ -69,7 +76,8 @@
         "coverUrl": "https://static.yakaboo.ua/media/cloudflare/product/webp/352x340/5/a/5aa244d0-49fb-4b77-88b7-a6328b406cb0.jpeg",
         "authorId": 8,
         "authorName": "Олесь Гончар",
-        "genre": "Філософський роман"
+        "genre": "Філософський роман",
+        "isFavorite": false
     },
     {
         "id": 9,
@@ -78,7 +86,8 @@
         "coverUrl": "https://dovidka.biz.ua/wp-content/uploads/2014/02/zacharovana-desna.jpg",
         "authorId": 9,
         "authorName": "Олександр Довженко",
-        "genre": "Автобіографічна повість"
+        "genre": "Автобіографічна повість",
+        "isFavorite": false
     },
     {
         "id": 10,
@@ -87,7 +96,8 @@
         "coverUrl": "https://knigoed.club/uploads/posts/books/1/1/1/skorocheno-majster-korablya.jpg",
         "authorId": 10,
         "authorName": "Юрій Яновський",
-        "genre": "Мариністичний роман"
+        "genre": "Мариністичний роман",
+        "isFavorite": false
     },
     {
         "id": 11,
@@ -96,7 +106,8 @@
         "coverUrl": "https://static.yakaboo.ua/media/cloudflare/product/webp/600x840/c/o/cover_83_48.jpg",
         "authorId": 11,
         "authorName": "Іван Багряний",
-        "genre": "Пригодницький роман"
+        "genre": "Пригодницький роман",
+        "isFavorite": false
     },
     {
         "id": 12,
@@ -105,7 +116,8 @@
         "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMMr86_Ex87d5EQeSHZcRrpssLtFeLv9hB7Q&s",
         "authorId": 12,
         "authorName": "Іван Котляревський",
-        "genre": "Бурлескно-травестійна поема"
+        "genre": "Бурлескно-травестійна поема",
+        "isFavorite": false
     },
     {
         "id": 13,
@@ -114,7 +126,8 @@
         "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpOu7yPndM-QmrlViBFA8uciWMhRV9icVuVA&s",
         "authorId": 13,
         "authorName": "Іван Нечуй-Левицький",
-        "genre": "Соціально-побутова повість"
+        "genre": "Соціально-побутова повість",
+        "isFavorite": false
     },
     {
         "id": 14,
@@ -123,7 +136,8 @@
         "coverUrl": "https://dovidka.biz.ua/wp-content/uploads/2015/11/perehresni-stezhki-franko-e1649749616170.jpg",
         "authorId": 14,
         "authorName": "Іван Франко",
-        "genre": "Психологічна повість"
+        "genre": "Психологічна повість",
+        "isFavorite": false
     },
     {
         "id": 15,
@@ -132,7 +146,8 @@
         "coverUrl": "https://diasporiana.org.ua/wp-content/uploads/books/3608/image.jpg",
         "authorId": 15,
         "authorName": "Тарас Шевченко",
-        "genre": "Поема"
+        "genre": "Поема",
+        "isFavorite": false
     },
     {
         "id": 16,
@@ -141,7 +156,8 @@
         "coverUrl": "https://vivat.com.ua/storage/1.d/files/5/3/53502081_1.png",
         "authorId": 20,
         "authorName": "Іван Карпенко-Карий",
-        "genre": "Драма"
+        "genre": "Драма",
+        "isFavorite": false
     },
     {
         "id": 17,
@@ -150,7 +166,8 @@
         "coverUrl": null,
         "authorId": 19,
         "authorName": "Василь Симоненко",
-        "genre": "Гумористична література"
+        "genre": "Гумористична література",
+        "isFavorite": false
     },
     {
         "id": 18,
@@ -159,7 +176,8 @@
         "coverUrl": null,
         "authorId": 16,
         "authorName": "Ольга Кобилянська",
-        "genre": "Соціально-психологічна повість"
+        "genre": "Соціально-психологічна повість",
+        "isFavorite": false
     },
     {
         "id": 19,
@@ -168,7 +186,8 @@
         "coverUrl": "https://upload.wikimedia.org/wikipedia/uk/3/30/Dzuba_Book.jpeg",
         "authorId": 17,
         "authorName": "Іван Дзюба",
-        "genre": "науково-публіцистична робота"
+        "genre": "науково-публіцистична робота",
+        "isFavorite": false
     },
     {
         "id": 20,
@@ -177,6 +196,7 @@
         "coverUrl": null,
         "authorId": 18,
         "authorName": "Панас Мирний",
-        "genre": "Соціально-психологічний роман"
+        "genre": "Соціально-психологічний роман",
+        "isFavorite": false
     }
 ]

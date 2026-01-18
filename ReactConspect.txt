@@ -4555,28 +4555,34 @@ const getError = (prop) =>
 	{ getError("title")}		
 	
 	
+🔀Алгоритм: копипастимо форму з mui	templates --> створ formik -> initValues,onSubmit
+					--> у <Box component ="form" onSubmit = {formik.handleSubmit}
+						--> <TextField name="title" щоб співпадав як у initValues
+	
 ----------------------------------------------
 06_UseEffect LocalStorage
 
+React	--	не вміє змінювати статичні файли | для цього треба БД
+ JSON -- seeder у коді праюємо з LocalStorage
 
- JSON -- seeder
-
-				//щоб пройтись по масиву
+				// [] щоб пройтись по масиву
 const [books, setBooks] = useState( [] );
 
 	--помилка вічний цикл тому запихуємо у функцію
 
 const fetchBooks = () => {
-	const localData = localStorage.getItem("books");
+	const localData = localStorage.getItem("books");	--дістаємо localStorage
 		if(localData) {
-		setBooks (JSON.parse(localData));
+		setBooks (JSON.parse(localData));		--якщо масив книг є то запис його у State переконверт localData з str у JSON
 	} else {
-		setBooks (booksJson);			
+		setBooks (booksJson);			//перетвор масив у str так як localStorage ключ--string
 		localStorage.setItem("books", JSON.stringify(booksJson));
 }
 
  useEffect	--	hook для того щоб виконати 
-					код при першому заході на сайт може бути багато з різними []
+					код при першому заході на сайт інші rerender не впливатимуть на нього
+
+CallBack	--	ф-ція яка передаэться в іншу ф-цію і в ній викликається
 
 useEffect(fetchBooks, [])	-- старий варіант
 useEffect(()=>{....}, [])
@@ -4593,14 +4599,27 @@ useEffect(fetchBooks)	-- без [] хук буде використ у пода�
 
 	тому з []	-- спрацює при першом малюванні
 	
+		
+  <Button color="success" variant="contained"	-- mui стилізація зробить заливку для кнопки
 	
 	
-				//у власи компонента як props предаємо функцію
-<BookCreateForm createCallback={addNewBook}	
-			//createCallback	--	назва проперті можна будь як
-								пропс у якій лежить адреса функції  addNewBook
-							
+		====BookListPage====
+<Box..	
+	<Grid container spacing={2} mx="100px" my="50px">
+                {books.map((b) => (
+                    <Grid size={3} key={b.id}>
+                        <BookCard book={b} />
+                    </Grid>
+                ))}
+            </Grid>        
+					//у класи компонента як props предаємо функцію
+	<BookCreateForm createCallback={addNewBook}	
+				//createCallback	--	назва проперті можна будь як
+									пропс у якій лежить адреса функції  addNewBook
+</Box>						
 
+	
+		====BookCreateForm==
 const BookCreateForm = ({createCallback}) => {
 	const handleSubmit = (values) => {
 	 createCallback(values);		--	через покажчики викликає ф-цію у батьківському компоненті BookListPage
@@ -4608,6 +4627,7 @@ const BookCreateForm = ({createCallback}) => {
 	};
 
 
+	ліст		форма
 з батьківсько в дочірній	--	props
 з форми в ліст (навпаки)	--	callBack	| пеоедаємо адресу функціїї і її викликаємо
 
@@ -4640,16 +4660,99 @@ function form() {
 	}
 
 --
-
+					//тут об'экт з values з форми
 const addNewBook = (newBook) => {
-	//setBooks([...books, newBook]);	--	додавання нової книги
+	//setBooks([...books, newBook]);	-- переписуємо константу додавання нової книги для роботи з хуками і колеціями
+	//books.push(newBook)			-- змінюємо масив але не змінить state
 	
+	
+								//сума всіх книг			порівнюємо з 0
+	const id = books.reduce( (acc, books) => Math.max(acc, books.id),  0) + 1;
+        newBook.id = id;
+		
+		
+ //через те що у JSON назва cover_url а у формі cover	
+ 
+		newBook.cover_url = newBook.cover;	-- перепис значення
+        delete newBook.cover;				--видаляємо непотрібне проперті
+		
+		
+		
 	const newList = [...books, newBook];
-	setBooks (newList);						--	для коду
-	localStorage(JSON.stringify(newList));
+	setBooks (newList);						--	для рендера
+	localStorage.setItem("books",JSON.stringify(newList));
 }
 
 const deleteBook = (id) => {
 	const newList = books.filter(b=> b.id !== id);	--	
 }
 
+--Видалення
+
+<Card..
+ <IconButton onClick={deleteClickHandle}	-- у BookCard onclick на кошик
+
+
+ <BookCard book={b} deleteCallback={deleteBook} favoriteCallback={setFavorite} />
+
+   <Grid..
+	{books.map((b) => (
+                    <Grid size={3} key={b.id}>		передаємо ф-цію для видалення
+                        <BookCard book={b} deleteCallback={deleteBook} favoriteCallback={setFavorite} />
+					....
+
+					//розпаковуємо змінні
+const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
+
+	const deleteClickHandle = () => {	-- book передається при створенні компонента
+			deleteCallback(book.id);	-- батьківська ф-ція deleteBook
+		}
+		
+		
+	filter -- повертає всі елем колеції що відповідають умові	
+		
+		
+const deleteBook = (id) => {		//повернуться всі id крім вибраного
+        const newList = books.filter(b => b.id !== id);
+		
+        setBooks(newList);		--оновлюється state і LocalStorage
+        localStorage.setItem("books", JSON.stringify(newList));
+    }		
+
+--isFavorite
+додаємо до JSON елементі проерті isFavorite
+
+const addNewBook = (newBook) => {   
+        .....
+        newBook.isFavorite = false;	-- додаємо дефолтний стан
+		
+		
+	const setFavorite = (id, favorite) => {
+        const newList = [...books];
+		
+        const index = newList.findIndex(b => b.id === id);
+        if(index !== -1) {							--	якщо id знайшлось
+		
+            newList[index].isFavorite = favorite;	--змінюємо проперті
+			
+            setBooks(newList);	--оновлюємо localStorage
+            localStorage.setItem("books", JSON.stringify(newList));
+			
+        }	
+	
+
+	
+додаємо ще один callBack favoriteCallback	--	найпростіший метод передавати елементи з дочірнього елема у батьківський
+
+const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
+    const [isFavorite, setIsFavorite] = useState(book.isFavorite);
+
+    const setFavoriteHandle = () => {
+        const favoriteState = !isFavorite
+        setIsFavorite(favoriteState);
+		
+        favoriteCallback(book.id, favoriteState);
+    }		
+
+----------------------------------------------
+07_Link	

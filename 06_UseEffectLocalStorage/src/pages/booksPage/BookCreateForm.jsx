@@ -60,10 +60,10 @@ const initValues = {
     cover: "",
 };
 
-const BookCreateForm = () => {
+const BookCreateForm = ({addBookCallback}) => {
     const handleSubmit = (values) => {
         console.log(values);
-        //add
+        addBookCallback(values);
     };
 
     const getError = (prop) => {
