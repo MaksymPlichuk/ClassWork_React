@@ -4755,4 +4755,91 @@ const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
     }		
 
 ----------------------------------------------
-07_Link	
+07_Routes
+
+React router --	перемикання між сторінками без reload
+
+npm i react-router
+
+
+ пишнмо навігацію у main.jsx
+ 
+ main.jsx	--	малює <App /> огортуємо його BrowserRouter щоб працював на весь сайт
+ 
+ import { BrowserRouter) from "react-router";
+ 
+
+<BrowserRouter>	-- дає можоивість робити навігацію
+	<App />
+</Browser Router>
+
+
+роутер -- підключаємо там де
+ <App /> -- тільки маршрути і навігація
+
+
+
+  import { Routes, Route) from "react-router";
+function App() {
+	return (
+	<>
+		<Navbar />	--	завжди малюється
+		
+		{/* Маршрути */}
+		<Routes>
+			<Route path="/" element={<BookListPage />}   />	--BookListPage тепер домашня сторінка
+			<Route path="/authors" element={<AuthorLisPage />} />
+		</Routes>
+	</>
+	);	
+	
+		path	--	те що після доменного імені
+		path="/"	-- домашня сторінка
+
+	books	--	додати до батьківсько домену localhostbooks
+	/books	--	додати до батьківсько домену localhost/books
+
+
+<Route path="/authorcreate" element={<AuthorsCreteForm />} />
+
+	/будьякий шлях
+<Route path="*" element={<h1>404 Not found</h1>} />
+
+ ==react-router є через код і через html==
+ 
+import { Link } from "react-router"	-- обов'язково 
+
+ Link	-- в основі <a> без Reload
+
+<Link to="/authors" >	--	to=href навігація '/' по URL  
+	<Button..
+
+ sx	--	тільки для mui компонентів
+
+
+	== useNavigate	навігація через JS
+
+import { useNavigate } from "react-router";
+
+const navigate = useNavigate()	--	щоб перекинуту користувача на сторіеку
+
+	function handleSubmit(formValues) {
+		createCallback(formValues);
+		
+		navigate("/books")	-- перенаправить на список книг
+	}
+	
+додавання книг без колбека
+
+чім більше сайт тим складніше реалізувати callBacks
+
+при navigate("/books")	-- буде малюватись useEffect
+
+	navigate(-1)	-- назад переміщення по історії
+	navigate("/books", {
+		replace: true	-- незаписувати в історію на яку попав користувач
+	});
+
+
+----------------------------------------------
+08_
