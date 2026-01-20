@@ -11,8 +11,8 @@ function App() {
   return (
     <>
       <Navbar />
-      <BookListPage />
-      {/* <AuthorListPage /> */}
+      {/* <BookListPage /> */}
+      <AuthorListPage />
       {/* <AuthorCreateForm/> */}
     </>
   )

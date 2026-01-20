@@ -63,10 +63,10 @@ const initValues = {
 };
 
 
-const AuthorCreateForm = () => {
+const AuthorCreateForm = ({ addAuthorCallBack }) => {
     const handleSubmit = (values) => {
         console.log(values);
-        //todo render author
+        addAuthorCallBack(values)
     }
 
     const getError = (prop) => {

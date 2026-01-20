@@ -52,8 +52,8 @@ const BookListPage = () => {
                         <BookCard book={b} removeBookCallBack={removeBook} setFavoriteCallBack={setFavorite} />
                     </Grid>
                 ))}
-                <BookCreateForm addBookCallback={addNewBook} />
             </Grid>
+                <BookCreateForm addBookCallback={addNewBook} />
 
         </Box>
     );
