@@ -9,6 +9,7 @@ import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
+import { useNavigate } from "react-router";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -60,10 +61,28 @@ const initValues = {
     cover: "",
 };
 
-const BookCreateForm = ({addBookCallback}) => {
-    const handleSubmit = (values) => {
-        console.log(values);
-        addBookCallback(values);
+const BookCreateForm = () => {
+    const navigate = useNavigate();
+
+    const handleSubmit = (newBook) => {
+        console.log(newBook);
+
+        let books = []
+
+        const localData = localStorage.getItem("books");
+        if (localData) {
+            books = JSON.parse(localData)
+        }
+
+        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
+        newBook.id = id;
+        newBook.isFavorite = false;
+        newBook.coverUrl = newBook.cover;
+        delete newBook.cover;
+        const newList = [...books, newBook];
+
+        localStorage.setItem("books", JSON.stringify(newList));
+        navigate("/books")
     };
 
     const getError = (prop) => {

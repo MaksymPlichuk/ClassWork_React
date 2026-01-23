@@ -9,7 +9,8 @@ import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
-import { useState } from "react";
+import { useNavigate } from "react-router";
+
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -64,9 +65,25 @@ const initValues = {
 
 
 const AuthorCreateForm = () => {
-    const handleSubmit = (values) => {
-        console.log(values);
-        //todo render author
+
+    const navigate = useNavigate();
+
+    const handleSubmit = (newAuthor) => {
+        console.log(newAuthor);
+
+        let authors = [];
+        const localData = localStorage.getItem("authors");
+        if (localData) {
+            authors = JSON.parse(localData);
+        }
+        const id = authors.reduce((acc, authors) => Math.max(acc, authors.id), 0) + 1;
+        newAuthor.id = id;
+        newAuthor.isFavorite = false;
+
+        const newList = [...authors, newAuthor];
+        localStorage.setItem("authors", JSON.stringify(newList));
+
+        navigate('/authors')
     }
 
     const getError = (prop) => {
@@ -77,7 +94,6 @@ const AuthorCreateForm = () => {
         ) : null;
     };
 
-    const maxYear = new Date().getFullYear();
     const validationScheme = object({
         firstName: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),
         lastName: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),

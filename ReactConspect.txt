@@ -4757,9 +4757,15 @@ const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
 ----------------------------------------------
 07_Routes
 
-React router --	перемикання між сторінками без reload
+ useEffect	-- зазвичай пишуть код який підтягуєж данні	
 
+
+React router --	перемикання між сторінками без reload
 npm i react-router
+
+ https://reactrouter.com/start/data/installation
+ https://reactrouter.com/start/declarative/installation	-- актуальніший спосіб
+
 
 
  пишнмо навігацію у main.jsx
@@ -4769,15 +4775,16 @@ npm i react-router
  import { BrowserRouter) from "react-router";
  
 
-<BrowserRouter>	-- дає можоивість робити навігацію
+<BrowserRouter>	-- дає можоивість робити навігацію на весь сайт
 	<App />
-</Browser Router>
+</BrowserRouter>
 
 
-роутер -- підключаємо там де
+роутер -- підключаємо там де будуть мінятись елементи
  <App /> -- тільки маршрути і навігація
 
 
+	app.jsx
 
   import { Routes, Route) from "react-router";
 function App() {
@@ -4786,7 +4793,8 @@ function App() {
 		<Navbar />	--	завжди малюється
 		
 		{/* Маршрути */}
-		<Routes>
+		<Routes>		-- описуються всі маршрути
+		
 			<Route path="/" element={<BookListPage />}   />	--BookListPage тепер домашня сторінка
 			<Route path="/authors" element={<AuthorLisPage />} />
 		</Routes>
@@ -4796,8 +4804,8 @@ function App() {
 		path	--	те що після доменного імені
 		path="/"	-- домашня сторінка
 
-	books	--	додати до батьківсько домену localhostbooks
-	/books	--	додати до батьківсько домену localhost/books
+	books	--	додати до батьківсько домену 	localhost/bookList/books
+	/books	--  повернутись до кореня 			localhost/books
 
 
 <Route path="/authorcreate" element={<AuthorsCreteForm />} />
@@ -4805,19 +4813,33 @@ function App() {
 	/будьякий шлях
 <Route path="*" element={<h1>404 Not found</h1>} />
 
- ==react-router є через код і через html==
+
+
+
+  ==react-router є через JS і через html(компонент)==
+ 
+ html	--	якщо є можливість переправити черз html
+ JS	--	якщо є логіка
  
 import { Link } from "react-router"	-- обов'язково 
 
  Link	-- в основі <a> без Reload
 
-<Link to="/authors" >	--	to=href навігація '/' по URL  
+<Link to="/authors" >	--	to=href навігація '/' по URL  домен/authors
 	<Button..
 
  sx	--	тільки для mui компонентів
 
+React перевіряє маршрути по app.jsx де прописана навігація
 
-	== useNavigate	навігація через JS
+
+ Додати Іконку
+   <IconButton
+		<AddCircleButton sx={{fontSize:2em}}>
+   <IconButton />	
+
+
+	== useNavigate	хук навігація через JS
 
 import { useNavigate } from "react-router";
 
@@ -4827,11 +4849,42 @@ const navigate = useNavigate()	--	щоб перекинуту користува
 		createCallback(formValues);
 		
 		navigate("/books")	-- перенаправить на список книг
+		useNavigate()("/books")	-- те саме іншим способом
 	}
 	
 додавання книг без колбека
 
 чім більше сайт тим складніше реалізувати callBacks
+
+
+коли змінюється адреса малюється компонент тобто працює useEffect який у нас вичитує данні з LocalStorage
+	тому можна змінити LocalStorage і перепраити на BookListPage
+
+	
+  const BookCreateForm = () => {
+    const navigate = useNavigate();
+
+    function handleSubmit(newBook) {	--newBook об'єкт values які прихадять з форми
+        let books = [];
+        const localData = localStorage.getItem("books");
+        if (localData) {
+            books = JSON.parse(localData);
+        }
+
+        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
+        newBook.id = id;
+        newBook.isFavorite = false;
+        newBook.cover_url = newBook.cover;
+        delete newBook.cover;
+        const newList = [...books, newBook];
+        localStorage.setItem("books", JSON.stringify(newList));
+
+        // перенаправити користувача на сторінку з книгами
+        navigate("/books");
+    }
+
+
+
 
 при navigate("/books")	-- буде малюватись useEffect
 
@@ -4842,4 +4895,93 @@ const navigate = useNavigate()	--	щоб перекинуту користува
 
 
 ----------------------------------------------
-08_
+08_Routes2 Вкладені маршрути
+
+Layout	--	
+
+import { Outlet } from "react-router";
+
+<Outlet	--	Динамічний компонент який підставляє іший 
+				компонент що відповідає посиланню
+
+ стає тим компонентом який ми вказали
+ 
+ 
+const DefaultLayout = () =>
+	return (
+	<Navbar />			контейнер займає 100vh щоб футер не прилипав
+		<Container sx = { {minHeight:"100vh"}}>
+			<Outlet />	--react-router подивитсья який URL і підставить компонент
+		</Container>
+	<Footer />
+	</>
+	);
+}; 
+
+
+у App.jsx
+
+ <Routes>		замінить OutLet
+	<Route	path=`/` element={DefaultLayout} -- батьківський визначає що помістити в Outlet через дочірні
+		<Route...	/>	дочірні компонети
+		
+	<Route path="/" element={<MainPage/>} />	-- адреса співпадає з батьківським
+	тому	заміняємо  ` path="/" ` на index
+
+	<Route path="books" element={<BookListPage/>} />
+			/books можна не писати бо додаєьбся до батьківського маршруту
+		доповнення до батьківського
+		
+		
+  ==щоб не повторювати path books bookcreate==
+
+		<Route path="books />
+			<Route index element={<BookListPage/>} />	--	index має бути обов'язково
+			<Route path="create" element={<BookListPage/>} /> -- вийде 'localhost/books/create'
+			
+			<Route path="/create" ... вийде 'localhost/create'
+		</Route >
+		
+		<Route path="books />
+			<Route index element={<AuthorListPage/>} />	--	index має бути обов'язково
+			<Route path="create" elemnt...
+		</Route >	
+		
+		
+ </Routes>
+
+
+без '/' додати до поточний адреси з '/' стри і напиши нову адресу
+
+
+<Link to="create">	-- до відкритой вкладки додається create "authors/create"
+	<IconButton color="secondary">
+		<AddCircleIcon sx={{ fontSize: "3em" }} />
+	</IconButton>
+</Link>
+
+
+update	--	той самий create тільки данні підтягуються
+
+
+ ==Валідація без Formik==
+ 
+ 
+ 
+ 
+==Url values ==
+
+	--App.jsx
+
+	<Route path="update/:id" element={<BookUpdateForm />} />
+</Route>	-- /:id	створ змінну		
+
+	--BookCard.jsx
+				//передає id
+<Link to={ `update/${book.id}`}>
+	<IconButton color="success" aria-label="share">
+		<EditIcon />
+	</IconButton>
+</Link>	
+	
+	

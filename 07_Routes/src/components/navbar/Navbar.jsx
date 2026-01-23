@@ -12,13 +12,28 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import { Link } from "react-router";
 
-const pages = ["Books", "Authors"];
+
 const settings = ["Profile", "Logout"];
 
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [loggedStatus, setLoggedStatus] = React.useState(false)
+
+    React.useEffect(() => {
+        const localData = localStorage.getItem("loggedState");
+        if (localData) {
+            setLoggedStatus(JSON.parse(localData));
+            console.log(loggedStatus)
+        } else {
+            setLoggedStatus(false);
+            localStorage.setItem("loggedState", loggedStatus);
+             console.log(loggedStatus)
+        }
+
+    }, [])
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -46,7 +61,7 @@ const Navbar = () => {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: "none", md: "flex" },
@@ -92,16 +107,16 @@ const Navbar = () => {
                             onClose={handleCloseNavMenu}
                             sx={{ display: { xs: "block", md: "none" } }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem
-                                    key={page}
-                                    onClick={handleCloseNavMenu}
-                                >
-                                    <Typography sx={{ textAlign: "center" }}>
-                                        {page}
-                                    </Typography>
-                                </MenuItem>
-                            ))}
+                            <MenuItem onClick={handleCloseNavMenu}>
+                                <Typography sx={{ textAlign: "center" }}>
+                                    Книги
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleCloseNavMenu}>
+                                <Typography sx={{ textAlign: "center" }}>
+                                    Автори
+                                </Typography>
+                            </MenuItem>
                         </Menu>
                     </Box>
                     <LibraryBooksIcon
@@ -111,7 +126,7 @@ const Navbar = () => {
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: "flex", md: "none" },
@@ -131,18 +146,25 @@ const Navbar = () => {
                             display: { xs: "none", md: "flex" },
                         }}
                     >
-                        {pages.map((page) => (
+                        <Link to="/books">
                             <Button
-                                key={page}
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: "white", display: "block" }}
                             >
-                                {page}
+                                Книги
                             </Button>
-                        ))}
+                        </Link>
+                        <Link to="/authors">
+                            <Button
+                                onClick={handleCloseNavMenu}
+                                sx={{ my: 2, color: "white", display: "block" }}
+                            >
+                                Автори
+                            </Button>
+                        </Link>
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        {loggedStatus == true ? <Tooltip title="Open settings">
                             <IconButton
                                 onClick={handleOpenUserMenu}
                                 sx={{ p: 0 }}
@@ -152,7 +174,15 @@ const Navbar = () => {
                                     src="/static/images/avatar/2.jpg"
                                 />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> :
+                            <>
+                                <Link to="/login">
+                                    <Button variant="contained" sx={{ mx: "1em" }}>Sign Up</Button>
+                                    <Button variant="contained" sx={{ mx: "1em" }}>Login</Button>
+                                </Link>
+                            </>
+                        }
+
                         <Menu
                             sx={{ mt: "45px" }}
                             id="menu-appbar"

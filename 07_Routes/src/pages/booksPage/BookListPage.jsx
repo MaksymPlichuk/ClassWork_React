@@ -1,8 +1,9 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, IconButton } from "@mui/material";
 import BookCard from "./BookCard";
 import booksJson from "./books.json"
-import BookCreateForm from "./BookCreateForm";
 import { useState, useEffect } from "react";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Link } from "react-router";
 
 const BookListPage = () => {
     const [books, setBooks] = useState([]);
@@ -17,16 +18,6 @@ const BookListPage = () => {
         }
     }, [])
 
-    const addNewBook = (newBook) => {
-        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
-        newBook.id = id;
-        newBook.isFavorite = false;
-        newBook.coverUrl = newBook.cover;
-        delete newBook.cover;
-        const newList = [...books, newBook];
-        setBooks(newList);
-        localStorage.setItem("books", JSON.stringify(newList));
-    }
     const removeBook = (id) => {
         const newList = books.filter(b => b.id !== id)
         setBooks(newList);
@@ -52,9 +43,16 @@ const BookListPage = () => {
                         <BookCard book={b} removeBookCallBack={removeBook} setFavoriteCallBack={setFavorite} />
                     </Grid>
                 ))}
-                <BookCreateForm addBookCallback={addNewBook} />
+                <Grid size={books.length % 4 == 0 ? 12 : 3} >
+                    <Box sx={{width:"100%", justifyContent:"center",height:"100%",display:"flex",flexDirection:"column",alignItems:"center"}}>
+                        <Link to="/booksCreate">
+                            <IconButton color="secondary">
+                                <AddCircleIcon sx={{ fontSize: "3em" }} />
+                            </IconButton>
+                        </Link>
+                    </Box>
+                </Grid>
             </Grid>
-
         </Box>
     );
 }
