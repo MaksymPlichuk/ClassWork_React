@@ -21,7 +21,7 @@ const BookListPage = () => {
     const removeBook = (id) => {
         const newList = books.filter(b => b.id !== id)
         setBooks(newList);
-        localStorage.setItem("book", JSON.stringify(newList));
+        localStorage.setItem("books", JSON.stringify(newList));
     }
     const setFavorite = (id, state) => {
         const newList = [...books];
