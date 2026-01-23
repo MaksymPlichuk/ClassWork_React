@@ -4985,3 +4985,95 @@ update	--	той самий create тільки данні підтягують�
 </Link>	
 	
 	
+----------------------------------------------
+09_useRef
+
+змінити іконку закладки у index.html		//тут
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				type="image/ico"	--	зробить тип картинки для ico
+
+
+ можна обійтись без State -- 
+ 
+useRef(null)	--	хук схожий на useState зберігає данні 
+	поза рендером тільки для читання, useState() 
+		тільки без set. Для читання html у JS без Render
+
+const emailRef = useRef(null)
+
+
+	<FormControl>
+		<FormLabel htmlFor="ema
+			<TextField
+			//ref={emailRef}	-- у emailRef запишеться весь Textfield на батькіскьий div
+			//	те саме що emailRef = document.getElementById("email");
+				
+			inputref={emailRef}	-- у emailRef запишеться input
+				 
+
+React контролює dom -- тому document.getElementById обходячи React доступаємось до dom 
+
+
+useRef -- щоб не робити постійний rerender при onChange()
+
+const handleSubmit (event) {
+	event.preventDefault();
+	
+	console.log(emailRef);	-- об'єкт у якого є current у якому input
+	console.log(emailRef.current);
+		
+	const cred = {
+		email: emailRef.current.value,
+		password: passwordRef.current.value
+	}
+};
+
+
+emailRegex.test(formValues.email)	-- перевірка Regex ом
+
+
+==прибрати кнопки логіну при реєстрації==
+
+запис у LocalStorage creds у Login
+
+	const [isAuth, set IsAuth] = useState(false);
+	
+		const authData = localstorage.getItem("auth");
+		if(authData) {
+		setIsAuth(true);
+	}
+
+ передаємо статус через калбек
+
+< Route path="/" element={<DefaultLayout isAuth={isAuth} />}=
+
+а DefaultLayout передає navbar
+
+	const DefaultLayout = ({isAuth}) => {
+		return (
+			<Navbar isAuth={isAuth} />
+
+передаємо
+	const LoginPage = ((setAuthCallback})
+
+змінює state логін  --він усвою чергу викликає rerender у navbar
+
+	==App.jsx==
+
+{ !isAuth? (
+	<Route
+	path="login"
+	element={<LoginPage setAuthCallback={setIsAuth} />}
+	: null
+}
+
+if(is) {
+}
+	--одне й теж--
+is && <div></div>
+
+
+----------------------------------------------
+10_
+
+
