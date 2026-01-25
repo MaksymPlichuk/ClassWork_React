@@ -4897,7 +4897,11 @@ const navigate = useNavigate()	--	щоб перекинуту користува
 ----------------------------------------------
 08_Routes2 Вкладені маршрути
 
-Layout	--	
+Layout	--	файл який відповідає за структуру сайту
+
+
+ <Conatiner	-- те саме що й	  div  або Box	 але з margin по краям
+
 
 import { Outlet } from "react-router";
 
@@ -4911,7 +4915,7 @@ const DefaultLayout = () =>
 	return (
 	<Navbar />			контейнер займає 100vh щоб футер не прилипав
 		<Container sx = { {minHeight:"100vh"}}>
-			<Outlet />	--react-router подивитсья який URL і підставить компонент
+			<Outlet />				--react-router подивитсья який URL і підставить компонент
 		</Container>
 	<Footer />
 	</>
@@ -4933,15 +4937,16 @@ const DefaultLayout = () =>
 		доповнення до батьківського
 		
 		
-  ==щоб не повторювати path books bookcreate==
+  ==щоб не повторювати path books bookcreate== (вони були на одному рівні а не продовження books)
 
 		<Route path="books />
 			<Route index element={<BookListPage/>} />	--	index має бути обов'язково
-			<Route path="create" element={<BookListPage/>} /> -- вийде 'localhost/books/create'
+			<Route path="create" element={<BookForm/>} /> -- вийде 'localhost/books/create'
 			
 			<Route path="/create" ... вийде 'localhost/create'
 		</Route >
 		
+							//будуємо layout
 		<Route path="books />
 			<Route index element={<AuthorListPage/>} />	--	index має бути обов'язково
 			<Route path="create" elemnt...
@@ -4951,7 +4956,7 @@ const DefaultLayout = () =>
  </Routes>
 
 
-без '/' додати до поточний адреси з '/' стри і напиши нову адресу
+без '/' додати до поточний адреси -- з '/' стри і напиши нову адресу
 
 
 <Link to="create">	-- до відкритой вкладки додається create "authors/create"
@@ -4964,26 +4969,162 @@ const DefaultLayout = () =>
 update	--	той самий create тільки данні підтягуються
 
 
+
+	const [formValues, setFormValues] = useState({	-- default значення
+        title: "",
+        author: "",
+        genre: "",
+        year: 0,
+        cover_url: "",
+    });
+
+
+const [errors, setErrors] = useState({});
+
+
+	function onChangeHandle(event) {
+        const { name, value } = event.target;
+        setFormValues({ ...formValues, [name]: value });
+    }
+
+
+
  ==Валідація без Formik==
+ 
+ 
+	 function validate() {
+        const validateErrors = {};	-- об'єкт з помилками
+        let result = true;			-- якщо помилок немає
+
+
+        if (formValues.title.length === 0) {
+            validateErrors.title = "Обов'язкове поле";	--у об'єкті з'явиться проперті title з текстом error 
+            result = false;
+        } 
+		else if (formValues.title.length > 100) {
+            validateErrors.title = "Максимальна довжина 100 символів";
+            result = false;
+        }
+
+
+        return { result: result, errors: validateErrors };
+    }
+ 
+ 
+	function handleSubmit(event) {
+        event.preventDefault();
+
+        const validateResult = validate();	-- запустить ф-цію вище
+
+        if (!validateResult.result) {			-- якщо result=false
+            setErrors(validateResult.errors);	-- у state errors запишуться помилки
+            return;
+        } else {
+            setErrors({});
+        }
+
+				//логіка збереження
+
+        const localData = localStorage.getItem("books");
+        if (localData) {
+            const books = JSON.parse(localData);
+            const index = books.findIndex(b => b.id == id);
+            books[index] = formValues;
+            localStorage.setItem("books", JSON.stringify(books));
+        }
+
+        // перенаправити користувача на сторінку з книгами
+        navigate("/books");
+    }
+
+    const getError = (prop) => {	-- у коді викликається getError(title)
+        return errors[prop] ? (
+            <Typography sx={{ mx: 1, color: "red" }} variant="h7">
+                {errors[prop]}
+            </Typography>
+        ) : null;
+    };
  
  
  
  
 ==Url values ==
 
-	--App.jsx
 
+	Через те що callBack буде довгим краще використаити urlValues
+
+
+	--App.jsx
+	
+	
+ <Route path="books">
+ 
 	<Route path="update/:id" element={<BookUpdateForm />} />
-</Route>	-- /:id	створ змінну		
+	
+</Route>	 /:id	створ змінну у яку можна покласти значення	
+				тому /books/update перестає працювати і потріно значення тобто: /books/update/1
+
 
 	--BookCard.jsx
+	
+	
 				//передає id
 <Link to={ `update/${book.id}`}>
+
 	<IconButton color="success" aria-label="share">
 		<EditIcon />
 	</IconButton>
+	
 </Link>	
 	
+	
+	useParams	--	хук який витягує параметри з URL(все після:) тобто 'update/:id' витягне id
+
+ const {id} = useParams()	
+	
+	useEffect(() => {
+         const localData = localStorage.getItem("books");
+         if (localData) {
+             const books = JSON.parse(localData);
+             const book = books.find((b) => b.id == id);	-- шукає по масиву книг чи є книг id якої = id від useParams 
+             if (!book) {
+                 navigate("/books", { replace: true });		--не знайшов такого id перенаправляє на /books
+             }
+             setFormValues(book);		-- запис у state з інпутами значення книги яку знайшов
+         } else {
+             navigate("/books", { replace: true });
+         }
+     }, []);
+	
+	
+	
+	
+🟢 AddForm															🟡 EditForm
+
+Використовує Formik													Використовує useState
+
+initialValues задані наперед										Сам пишеш: formValues,onChangeHandle,errors
+onChange, onBlur, values, errors, touched — усе робить Formik
+
+Мінімум ручного коду												Усе контролюється вручну
+
+👉 Декларативний підхід												👉 Імперативний підхід
+	
+	
+Логіка:															Логіка:
+
+	читає authors										Використовує useParams() → id
+	рахує новий id							Через useEffect: знаходить автора	 підставляє в форму				
+	додає isFavorite					При submit:	знаходить індекс									
+	пушить у масив									перезаписує елемент			
+
+
+UX-дрібниці
+
+				AddForm				EditForm
+onBlur			✅ є				❌ нема
+touched			✅ є				❌ нема
+
 	
 ----------------------------------------------
 09_useRef

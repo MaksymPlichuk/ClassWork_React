@@ -10,8 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Link } from 'react-router';
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 
@@ -66,9 +66,12 @@ const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack }) => {
                 >
                     <FavoriteIcon />
                 </IconButton>
-                <IconButton aria-label="share">
-                    <ShareIcon />
-                </IconButton>
+
+                <Link to={`update/${book.id}`}>
+                    <IconButton aria-label="share" color='success'>
+                        <EditIcon />
+                    </IconButton>
+                </Link>
             </CardActions>
         </Card>
     );

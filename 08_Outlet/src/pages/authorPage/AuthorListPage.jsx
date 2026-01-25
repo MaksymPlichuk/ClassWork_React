@@ -47,7 +47,7 @@ const AuthorListPage = () => {
                 ))}
                 <Grid size={authors.length % 4 == 0 ? 12 : 3} >
                     <Box sx={{ width: "100%", justifyContent: "center", height: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <Link to="/authorsCreate">
+                        <Link to="create">
                             <IconButton color="secondary">
                                 <AddCircleIcon sx={{ fontSize: "3em" }} />
                             </IconButton>
