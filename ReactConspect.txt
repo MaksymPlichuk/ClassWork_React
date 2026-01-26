@@ -5215,6 +5215,144 @@ is && <div></div>
 
 
 ----------------------------------------------
-10_
+10_useContext
+
+робимо isAuth робимо глобальним щоб не було передачі між компонентами
+
+	function default Layout (isAuth) {
+		navbar(isAuth);	--	щоб не передаваим з однією в іншу
+	}
+	у багатьох компонентах посилання на 1 state
 
 
+стан у багатьох компонентах краще зробити 
+	context -- глобальне сховище і будь який компонент його достане
+
+		state попадає зразу у те місце де він має бути
+
+import { createContext) from "react";
+
+
+	export const AuthContext = createContext(null)	--	створення контексту
+
+export const AuthProvider = ({children}) => {	--children дочірні компоненти (вкладені компоненти)
+						//для зручності і більш правильного коду
+	
+	const [isAuth,setIsAuth] = useState(false)
+	
+	function login() {
+		setIsAuth(true);
+	}
+	function logout() {
+		setIsAuth(false);
+	}
+	
+	
+	return (
+		//<h1>	--	не має доступу до конектса бо не у компоненті
+		
+		//<AuthContext.Provider>	--	компонент щоб передати інші компоненти
+		
+								//те що зберігає
+		<AuthContext.Provider value={{ isAuth, login, logout }}> 
+			{children)
+		</AuthContext.Provider>
+		);
+}
+
+
+
+
+	App, Navbar -- мають мати цей контекст тому
+  так як <App /> -- у main.jsx
+
+import { AuthProvider from "./context/AuthContext.jsx";
+
+	<Browser Router>
+		<AuthProvider>	-- всі компоненти матимуть доступ до context бо App вимальовує всі їх
+			<App />
+		</AuthProvider>
+	</Browser Router>
+
+
+				//старий варіант
+const Navbar = ({ isAuth }) => {
+												//вписуються у context
+import { useContext } -- повертатиме value (value={isAuth, login, logout })
+
+
+const Navbar = () => {
+					//вказуємо з якого context брати
+ const {isAuth} = useContext(AuthContext)
+
+
+
+у інших компонентах
+{!isAuth && (
+	<Route
+	path="login"
+	element={<LoginPage />}	-- не треба callBack
+	/>
+)}
+
+	==loginPage==
+
+import { useRef, useState, useContext) from "react";
+import { AuthContext } from "../../../context/AuthContext";
+
+const LoginPage = () => {
+
+		//деструктуризація з value
+	const { login } = useContext(AuthContext);	-- витягування потрібного value з контексту
+
+	login()	--	ф-ція змінює state у AuthContext
+}
+
+
+	==AuthContext.jsx==
+						  //ф-ція повертає це
+export const useAuth = () => useContext(AuthContext);	
+
+	//щоб скоротит писанину створюємо кастомний хук
+
+import { useAuth } from
+
+ const {isAuth} = useAuth();
+
+
+context	--	забирає можливість передачі компонента у компоненті для зручності
+	
+	
+	==Palette==		mui комопнент
+
+import { createTheme ) from "@mui/material";	-- функція від mui
+export const redTheme = createTheme ({
+	palette: {
+		mode: "dark"	-- робить bg у еомпонентів чорними
+		primary: {
+		light: "",
+		main: "",
+		dark:
+	},
+	secondary: {
+		main:	"#FF7F50"
+	}
+});
+	
+	
+	
+import { lightTheme from "./theme/lightTheme";
+import { darkTheme from "./theme/dark Theme";	
+	
+	
+	//щоб теми працювали огортаємо його у ThemeProvider
+
+<ThemeProvider theme={isDark ? darkTheme lightTheme}>
+	{/* Маршрути */}
+	<Routes>
+
+
+пам'ятати мову	--	робити petProject
+
+----------------------------------------------
+11_
