@@ -5080,7 +5080,7 @@ const [errors, setErrors] = useState({});
 	
 	useParams	--	хук який витягує параметри з URL(все після:) тобто 'update/:id' витягне id
 
- const {id} = useParams()	
+ const {id} = useParams()	-- завжди string
 	
 	useEffect(() => {
          const localData = localStorage.getItem("books");
@@ -5129,85 +5129,193 @@ touched			✅ є				❌ нема
 ----------------------------------------------
 09_useRef
 
+https://mui.com/material-ui/getting-started/templates/
+
+ коли пишемо компонент можна і .js але .jsx підкреслює що це саме компонент
+ 
+ './../'	--	'./' можна не писати показуэ для наглядності що виконуємо з поточної папки
+ 
+
 змінити іконку закладки у index.html		//тут
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				type="image/ico"	--	зробить тип картинки для ico
 
 
- можна обійтись без State -- 
+
+form через state	--	✅	контрольований інпут ✅value ✅live validation 
+						❌забагато рендеру
+						
+ можна обійтись без State -- ✅ validation on sumbit
+							Через useRef
+
+
  
 useRef(null)	--	хук схожий на useState зберігає данні 
 	поза рендером тільки для читання, useState() 
 		тільки без set. Для читання html у JS без Render
 
+
 const emailRef = useRef(null)
 
+	ref	--	атрибут наявний у всіх компонентах
 
 	<FormControl>
-		<FormLabel htmlFor="ema
+		<FormLabel htmlFor="email
 			<TextField
 			//ref={emailRef}	-- у emailRef запишеться весь Textfield на батькіскьий div
-			//	те саме що emailRef = document.getElementById("email");
+				те саме що emailRef = document.getElementById("email");
 				
-			inputref={emailRef}	-- у emailRef запишеться input
+			inputref={emailRef}	-- у emailRef запишеться input (тільки дляMUI)
 				 
+				 
+		</FormLabel>		 
+	</FormControl>			 
 
-React контролює dom -- тому document.getElementById обходячи React доступаємось до dom 
 
+ React контролює dom -- тому document.getElementById обходячи React доступаємось до dom 
 
-useRef -- щоб не робити постійний rerender при onChange()
+					
 
 const handleSubmit (event) {
 	event.preventDefault();
 	
-	console.log(emailRef);	-- об'єкт у якого є current у якому input
+	console.log(emailRef);	-- об'єкт у якого є current у якому input (current: input)
 	console.log(emailRef.current);
 		
-	const cred = {
+		
+	const cred = {					--дані користувача через useRef
 		email: emailRef.current.value,
 		password: passwordRef.current.value
 	}
 };
 
 
+	🟡спосіб через useRef -- щоб не робити постійний rerender при onChange()
+					коли данні вводяться в input render не відбуваться тільки вичитуємо input 
+				і ніяк на них не впливаємо. Валідацю можна тільки через Submit
+					
+
+
+	^Валідація така сама
+	
+ const [errors, setErrors] = useState({});
+ 
+ function validate(formValues) {
+        const validateErrors = {};
+        let result = true;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+						все крім ' ' і '@'
+
 emailRegex.test(formValues.email)	-- перевірка Regex ом
+
 
 
 ==прибрати кнопки логіну при реєстрації==
 
-запис у LocalStorage creds у Login
 
-	const [isAuth, set IsAuth] = useState(false);
+ у Login.jsx -- записуються в LocalStorage credentials
+
+  У App.jsx	-- щоб авторизувати на всьому сайті
+
+
+
+	 чи він авторизований
+	const [isAuth, setIsAuth] = useState(false);
 	
-		const authData = localstorage.getItem("auth");
+useEffect(() => {	
+	const authData = localstorage.getItem("auth");
 		if(authData) {
-		setIsAuth(true);
-	}
+			setIsAuth(true);
+		}
+	},[])	-- помістили в useEffect щоб не було вічного циклу
 
- передаємо статус через калбек
+	==Обновляти кнопки==
+	window.location.reload()	--	можна але не бажано
 
-< Route path="/" element={<DefaultLayout isAuth={isAuth} />}=
+ так як App малює всі компоненти він може роздати state [isAuth]
+
+App --> DefaultLayout --> Navbar
+
+ тому передаємо статус через props
+
+
+< Route path="/" element={<DefaultLayout isAuth={isAuth} />}
 
 а DefaultLayout передає navbar
 
+
 	const DefaultLayout = ({isAuth}) => {
+	
 		return (
 			<Navbar isAuth={isAuth} />
+			..
+		
 
-передаємо
-	const LoginPage = ((setAuthCallback})
+	const Navbar = ({ isAuth }) => {	-- Якщо App змінить state то всі компоненти які його мають rerender
+		
+		        {isAuth ? (
+                            <>
+                                <Tooltip title="Open settings">
+                                    <IconButton
+                                        onClick={handleOpenUserMenu}
+                                        sx={{ p: 0 }}
+                                    >
+                                        <Avatar
+                                            alt="Remy Sharp"
+                                            src="/static/images/avatar/2.jpg"
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login">
+									..
+		=App.jsx=
+			
+	кнопки у Navbar.jsx прив'язані до state isAuth тому треба setIsAuth --> Login.jsx  для rerender
+							який буде викликатись у Login.jsx onSubmit
+										того передаємо setIsAuth
+										
+										
+                  <Route path="login" element={<LoginPage setAuthCallback={setIsAuth} />}
+                        
+               
+			
+			
+	const LoginPage = ({ setAuthCallback }) => {		
 
-змінює state логін  --він усвою чергу викликає rerender у navbar
+		 const handleSubmit = (event) => {
+		..
+			setAuthCallback(true);	-- змінює State
+			navigate("/", { replace: true });
+		};
 
-	==App.jsx==
+	
+ Щоб сховати  loginPage при Login
+ 
+ 1. Можна передати isAuth <LoginPage setAuthCallback={setIsAuth} isAuth={isAuth}
+		=login.jsx=
+			if(isAuth){
+				navigate('/', {replace: true})
+			}
 
-{ !isAuth? (
-	<Route
-	path="login"
-	element={<LoginPage setAuthCallback={setIsAuth} />}
-	: null
-}
+ 2. {!isAuth && (	--ховаэ маршрут
+                        <Route
+                            path="login"
+                            element={<LoginPage setAuthCallback={setIsAuth} />}
+                        />
+                    )}
 
+
+
+		&&	-- щоб не писати	`:null`
+	
+	{!isAuth  (	.. ) : null }
+	{!isAuth && ( .. )  }
+
+
+	
 if(is) {
 }
 	--одне й теж--
