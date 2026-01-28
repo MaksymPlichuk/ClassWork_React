@@ -15,7 +15,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 
-const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack }) => {
+const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack, role }) => {
     const [isFavorite, setIsFavorite] = useState(book.isFavorite);
 
     const deleteCardHandle = () => {
@@ -67,11 +67,12 @@ const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack }) => {
                     <FavoriteIcon />
                 </IconButton>
 
-                <Link to={`update/${book.id}`}>
-                    <IconButton aria-label="share" color='success'>
-                        <EditIcon />
-                    </IconButton>
-                </Link>
+                {!role == "user" ?
+                    <Link to={`update/${book.id}`}>
+                        <IconButton aria-label="share" color='success'>
+                            <EditIcon />
+                        </IconButton>
+                    </Link> : null}
             </CardActions>
         </Card>
     );

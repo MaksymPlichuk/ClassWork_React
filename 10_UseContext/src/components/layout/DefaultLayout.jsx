@@ -3,10 +3,10 @@ import Footer from "../footer/Footer";
 import Navbar from "../navbar/Navbar";
 import { Outlet } from "react-router";
 
-const DefaultLayout = () => {
+const DefaultLayout = ({isAuth}) => {
     return (
         <>
-            <Navbar />
+            <Navbar isAuth={isAuth} />
             <Container sx={{ minHeight: "100vh" }}>
                 <Outlet />
             </Container>

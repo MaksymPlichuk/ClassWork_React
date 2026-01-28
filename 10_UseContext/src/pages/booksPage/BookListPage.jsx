@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Link } from "react-router";
 
-const BookListPage = () => {
+const BookListPage = ({role}) => {
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
@@ -40,16 +40,18 @@ const BookListPage = () => {
             <Grid container spacing={2} mx="100px" my="50px">
                 {books.map((b) => (
                     <Grid size={3} key={b.id}>
-                        <BookCard book={b} removeBookCallBack={removeBook} setFavoriteCallBack={setFavorite} />
+                        <BookCard book={b} removeBookCallBack={removeBook} setFavoriteCallBack={setFavorite} role={role} />
                     </Grid>
                 ))}
                 <Grid size={books.length % 4 == 0 ? 12 : 3} >
                     <Box sx={{width:"100%", justifyContent:"center",height:"100%",display:"flex",flexDirection:"column",alignItems:"center"}}>
+                        
+                        {!role=="user" ? 
                         <Link to="create">
                             <IconButton color="secondary">
                                 <AddCircleIcon sx={{ fontSize: "3em" }} />
                             </IconButton>
-                        </Link>
+                        </Link> : null}
                     </Box>
                 </Grid>
             </Grid>

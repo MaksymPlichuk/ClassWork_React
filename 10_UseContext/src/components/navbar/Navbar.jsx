@@ -17,23 +17,11 @@ import { Link } from "react-router";
 
 const settings = ["Profile", "Logout"];
 
-const Navbar = () => {
+const Navbar = ({ isAuth}) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [loggedStatus, setLoggedStatus] = React.useState(false)
 
-    React.useEffect(() => {
-        const localData = localStorage.getItem("loggedState");
-        if (localData) {
-            setLoggedStatus(JSON.parse(localData));
-            console.log(loggedStatus)
-        } else {
-            setLoggedStatus(false);
-            localStorage.setItem("loggedState", loggedStatus);
-             console.log(loggedStatus)
-        }
-
-    }, [])
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -164,7 +152,8 @@ const Navbar = () => {
                         </Link>
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
-                        {loggedStatus == true ? <Tooltip title="Open settings">
+
+                        {isAuth == true ? <Tooltip title="Open settings">
                             <IconButton
                                 onClick={handleOpenUserMenu}
                                 sx={{ p: 0 }}
@@ -177,8 +166,10 @@ const Navbar = () => {
                         </Tooltip> :
                             <>
                                 <Link to="/login">
-                                    <Button variant="contained" sx={{ mx: "1em" }}>Sign Up</Button>
                                     <Button variant="contained" sx={{ mx: "1em" }}>Login</Button>
+                                </Link>
+                                <Link to="/register">
+                                    <Button variant="contained" sx={{ mx: "1em" }}>Sign Up</Button>
                                 </Link>
                             </>
                         }
