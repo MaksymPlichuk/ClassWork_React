@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -15,6 +15,7 @@ import { styled } from "@mui/material/styles";
 import ForgotPassword from "./../components/ForgotPassword";
 import { Link, useNavigate } from "react-router";
 import { GoogleIcon, FacebookIcon } from "./../components/CustomIcons";
+import { AuthContext } from "../../context/AuthContext";
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -59,8 +60,9 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 
-const LoginPage = ({setAuthCallback,setRoleCallBack}) => {
+const LoginPage = ({ setRoleCallBack }) => {
 
+    const { login } = useContext(AuthContext)
     const [open, setOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const emailRef = useRef(null);
@@ -92,9 +94,9 @@ const LoginPage = ({setAuthCallback,setRoleCallBack}) => {
         }
 
         setUserRole(cred)
-      
-        setAuthCallback(true);
-        //navigate("/", { replace: true });
+
+        login();
+        navigate("/", { replace: true });
 
     }
 

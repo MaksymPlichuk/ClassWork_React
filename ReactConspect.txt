@@ -5325,6 +5325,8 @@ is && <div></div>
 ----------------------------------------------
 10_useContext
 
+	Context -- ніби глобальна змінна доступ до якої є у любого компонента
+
 робимо isAuth робимо глобальним щоб не було передачі між компонентами
 
 	function default Layout (isAuth) {
@@ -5338,10 +5340,12 @@ is && <div></div>
 
 		state попадає зразу у те місце де він має бути
 
+
 import { createContext) from "react";
 
 
-	export const AuthContext = createContext(null)	--	створення контексту
+	export const AuthContext = createContext(null)	--	створення контексту, ніби глобальна змінна
+
 
 export const AuthProvider = ({children}) => {	--children дочірні компоненти (вкладені компоненти)
 						//для зручності і більш правильного коду
@@ -5353,20 +5357,23 @@ export const AuthProvider = ({children}) => {	--children дочірні комп
 	}
 	function logout() {
 		setIsAuth(false);
+		localStorage.removeItem("auth");	-- видалить creds
 	}
 	
 	
 	return (
 		//<h1>	--	не має доступу до конектса бо не у компоненті
 		
-		//<AuthContext.Provider>	--	компонент щоб передати інші компоненти
+		//<AuthContext.Provider>	-- вкладений компонент щоб всередину передати інші компоненти
+							до сховища матимуть доступ лише ті компоненти які лежать у Provider
 		
 								//те що зберігає
 		<AuthContext.Provider value={{ isAuth, login, logout }}> 
 			{children)
 		</AuthContext.Provider>
 		);
-}
+}		
+		provider для зручності і більш правильного коду якщо 1 context у проекті його можна не створювати
 
 
 
@@ -5383,14 +5390,20 @@ import { AuthProvider from "./context/AuthContext.jsx";
 	</Browser Router>
 
 
-				//старий варіант
-const Navbar = ({ isAuth }) => {
-												//вписуються у context
-import { useContext } -- повертатиме value (value={isAuth, login, logout })
 
+	 <Route index element={<AuthProvider>
+								<AuthorListPage 	--	тільки компонет AuthorListPage матиме доступ до сховища
+						  </AuthProvider>/>} />
+
+
+				//старий варіант
+const Navbar = ({ isAuth }) => {..
+														//вписуються у context
+import { useContext } 			-- повертатиме value (value={isAuth, login, logout })
+import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
-					//вказуємо з якого context брати
+								//вказуємо з якого context брати (імпортували AuthContext)
  const {isAuth} = useContext(AuthContext)
 
 
@@ -5413,7 +5426,7 @@ const LoginPage = () => {
 		//деструктуризація з value
 	const { login } = useContext(AuthContext);	-- витягування потрібного value з контексту
 
-	login()	--	ф-ція змінює state у AuthContext
+	login()	--	ф-ція змінює state у AuthContext (раніше був callBack)
 }
 
 
@@ -5428,38 +5441,73 @@ import { useAuth } from
  const {isAuth} = useAuth();
 
 
+
+	
+	            <MenuItem	//mui функція для закривання меню
+                onClick={handleCloseUserMenu} >
+				
+                <Typography sx={{ textAlign: "center" }}>
+                    Профіль
+                </Typography>
+            </MenuItem>
+
+
+
 context	--	забирає можливість передачі компонента у компоненті для зручності
 	
 	
 	==Palette==		mui комопнент
 
-import { createTheme ) from "@mui/material";	-- функція від mui
+У React 2 кольори primary secondary
+
+https://www.materialpalette.com/
+
+
+  import { createTheme ) from "@mui/material";	-- функція від mui
+
+export const redTheme =	createTheme({	--Створення теми
+	
+	palette: {
+		primary:{
+			light: "",
+			main: "",
+			dark: "",
+		
+		},
+		secondary:{
+			main: ""	-- колір кнопок
+		},
+		
+		--глобальні константи для кольорів
+		info:{},
+		error:{},
+		success:{},
+		warning:{}
+	}
+
+})	
+
+	//щоб теми працювали огортаємо App.jsx у ThemeProvider
+		
+				/передаєм тему
+<ThemeProvider theme={isDark ? darkTheme lightTheme}>	
+	<Routes>
+
+palette: {
+		mode: "dark"	-- темна тема
+		primary:{..
+
+
+
+  
+
 export const redTheme = createTheme ({
 	palette: {
-		mode: "dark"	-- робить bg у еомпонентів чорними
-		primary: {
-		light: "",
-		main: "",
-		dark:
-	},
-	secondary: {
-		main:	"#FF7F50"
-	}
+		mode: "dark"	-- робить bg у компонентів чорними (від mui)
+		primary: {..
 });
 	
 	
-	
-import { lightTheme from "./theme/lightTheme";
-import { darkTheme from "./theme/dark Theme";	
-	
-	
-	//щоб теми працювали огортаємо його у ThemeProvider
-
-<ThemeProvider theme={isDark ? darkTheme lightTheme}>
-	{/* Маршрути */}
-	<Routes>
-
-
 пам'ятати мову	--	робити petProject
 
 ----------------------------------------------

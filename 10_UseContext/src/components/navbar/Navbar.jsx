@@ -13,15 +13,17 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import { Link } from "react-router";
+import { AuthContext } from "../../pages/context/AuthContext";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { ThemeContext } from "../../pages/context/ThemeContext";
+import LightModeIcon from '@mui/icons-material/LightMode';
 
+const Navbar = () => {
 
-const settings = ["Profile", "Logout"];
-
-const Navbar = ({ isAuth}) => {
+    const { isAuth, logout } = React.useContext(AuthContext)
+    const { isDark, setTheme } = React.useContext(ThemeContext);
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const [loggedStatus, setLoggedStatus] = React.useState(false)
-
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -37,6 +39,14 @@ const Navbar = ({ isAuth}) => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleLogout = () => {
+        handleCloseUserMenu();
+        logout();
+    }
+    const changeThemeHandle = () => {
+        setTheme();
+    }
 
     return (
         <AppBar position="static" color="secondary">
@@ -151,6 +161,13 @@ const Navbar = ({ isAuth}) => {
                             </Button>
                         </Link>
                     </Box>
+                    <Box sx={{ flexGrow: 0, mx: 5 }}>
+                        <IconButton sx={{ color: "white" }} onClick={changeThemeHandle}>
+                            {isDark ? <LightModeIcon /> : <DarkModeIcon />}
+
+                        </IconButton>
+                    </Box>
+
                     <Box sx={{ flexGrow: 0 }}>
 
                         {isAuth == true ? <Tooltip title="Open settings">
@@ -173,7 +190,6 @@ const Navbar = ({ isAuth}) => {
                                 </Link>
                             </>
                         }
-
                         <Menu
                             sx={{ mt: "45px" }}
                             id="menu-appbar"
@@ -190,16 +206,20 @@ const Navbar = ({ isAuth}) => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem
-                                    key={setting}
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    <Typography sx={{ textAlign: "center" }}>
-                                        {setting}
-                                    </Typography>
-                                </MenuItem>
-                            ))}
+                            <MenuItem
+                                onClick={handleCloseUserMenu}
+                            >
+                                <Typography sx={{ textAlign: "center" }}>
+                                    Profile
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem
+                                onClick={handleLogout}
+                            >
+                                <Typography sx={{ textAlign: "center" }}>
+                                    Logout
+                                </Typography>
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>
