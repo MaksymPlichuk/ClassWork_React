@@ -5513,19 +5513,200 @@ export const redTheme = createTheme ({
 ----------------------------------------------
 11_Axios
 
+ React	--	треба backend
+				api(backend)
+
+ url?pass=qwerty&name=admin		--	? параметри
+ 
+	useEffect	--	❌ не може приймати async
+	
+		useEffect( ❌ async() => {
+				const resp = await fetch(url)
+		}, [])
+ 
+ 
+<StrictMode>		--	кидає по 2 запити 
+							debug режим який 2 раза рендерить компонент
+									даэ виясняти помилки при publish вимикаэться
+    <BrowserRouter>
+      <ThemeContextProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeContextProvider>
+    </BrowserRouter>
+  </StrictMode>
+
+ 
+	fetch	-- класичний js
+	axios	-- покращена версія для React
+ 
+
 Axios — це популярна JavaScript-бібліотека, яка працює як «кур'єр» між вашим вебдодатком та сервером. Вона дозволяє надсилати HTTP-запити (наприклад, отримувати список товарів або відправляти дані форми) та обробляти відповіді.
  
- npm install axios
+ npm i axios
 
-const response = await axios.get(url);
-	1 await, більше функціоналу чим у fetch
 
-дає можливість створи об'єкт
+	axios -- теж асинхроний тому треба await або then
+					дає можливість створи об'єкт
 
 	const http = axios.create((baseUrl="https://backend.com/api/"})
 
 тепер можна просто писати http.get("users")
 
 
+
+const response = await axios.get(url);
+	1 await, більше функціоналу чим у fetch
+
+  const data = await resp.json()		-- fetch
+  const { data,status } = resp			--axios не треба додатковий await
+
+
+ if (status === 200) {
+            const booksData = [];
+            for (const [book] of data.books) {
+				
+				[book] -- те саме що let item = book[0]
+							бо по API масив книг а книга це масив
+			
+			
+                const formated = {
+                    id: book.id,
+                    title: book.title,
+                    author: book.authors[0].name,
+                    cover_url: book.image,
+                    rating: book.rating.average,
+                    isFavorite: false,
+                };
+                booksData.push(formated);
+				  setLoading(false);
+            }
+
+
+
+
+	==BookCard
+
+ <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    {book.genre}, {book.year}
+                    <Rating readOnly max={10} value={Math.round(book.rating * 10)}/>	-- зірочки
+               </Typography>
+
+
+	--Spinner
+
+import {  CircularProgress } from "@mui/material";
+
+	const [loading,setLoading] = useState(true)	-- створ state щоб коли сторінка занрузилась то state = false
+
+
+	useEffect(()=> {..
+				setLoading(false);
+	},[])
+
+ if(loading){ 
+	return( <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress enableTrackSlot size="3rem" sx={{ mt: 4 }} />;
+				</Box>)	}
+
+
+
+
+
 ----------------------------------------------
-12_
+12_crud
+
+ formik -- провалідує дані
+ 
+htmlFor	--	мета тег для seo
+
+import {ref} from 
+
+.oneOf()	-- перевірка на унікальність
+
+
+delete userData.confirmPassword;	--	видалити властивість
+
+
+const [user, setUser] useState(null);	-- створ змінну яка зберігатиме user
+	function login() {
+		setIsAuth(true);
+		const auth localStorage.getItem("auth");
+		if(auth) {
+		setUser (JSON.parse(auth));
+	}
+}
+
+<AuthContext. Provider value={.. user }>
+
+	
+	==BookListPage
+						//якщо роль не адмін то кнопки додавання немає
+{isAuth && user.role === "admin" && (
+	<Grid size={books.length % 3 === 0 ? 12 4}>
+
+	==App.jsx
+
+				//ховаємо маршрути якщо не має прав
+<Route index element={<BookListPage />} />
+	{isAuth && user.role === "admin" &&
+		<Route
+		path="create"
+		element={<BookCreateForm />}
+		/>
+	<Route
+	path="update/:id"
+	element={<BookUpdateForm />}
+	/>
+</>	
+
+
+
+somee.com	-- 1 безкоштовний хостинг для сервера
+
+swagger	--	автоматично генерує crud для api
+
+ post	--	створення
+ put	-- post + id
+
+
+.env	--	environment глобальні змінні для всього проекту 
+		дає можливість не змінюючи код змінити значення змінних
+
+VITE_	--	обов'язкова частина для environment
+
+VITE_BASE_API_URL=https://pd411.somee.com/api/	-- після цього треба зробитти рестарт проекта
+
+	Vite на етапі білду підставляє ці значення в JS-код.
+
+‎books_shop/.env
+	VITE_BOOKS_URL=https://pd411.somee.com/api/books
+
+
+		==BookListPage
+const booksUrl = import.meta.env.VITE_BOOKS_URL;
+const pageCount = 15;
+				
+		//робимо queary через `?`		
+const url = `${booksUrl}?page_size=${pageCount}&page=${page}`;
+
+
+	==BookCreateForm
+	
+function handleSubmit(newBook) {
+
+	const booksUrl = import.meta.env.VITE_BOOKS_URL;
+	
+	const response = await axios.post(booksUrl, newBook);	-- додати книгу
+
+	if (response.status === 200) {
+			navigate("/books");
+		}
+
+}
+	data	--	те що вертає axios
+
+
+
+
