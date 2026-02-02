@@ -5855,4 +5855,179 @@ const deleteBook = async (id) => {
     };
 
 ----------------------------------------------
-13_
+13_Redux
+
+Контекстів може бути дуже багато а це приводить до великої писанини
+	<ThemeContextProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeContextProvider>
+	  
+	  
+ Redux	--	бібліотека контекст у якому може бути декілька контекстів
+		сховище контекстів, до якого матимуть доступ всі компоненти
+		
+		
+ payload -- дані які хочемо ввести
+ 
+ UI (btn click)--> event handler --> Dispatcher генерує (Action {type,payload})
+	--> Store (state всіх контекстів) --> Reducer (по типу 
+	контекста змію state) логіка яка змінює State(об'єкт дані з всього redux)
+		--> Reducer змінює State
+
+	Reducer контроллер state
+
+const state = {
+		balance:0,
+		pinCode:1345,
+	}
+const newState = { ...state, balance: 10 ; }
+
+
+ Головне правильно прописати Reducer Store
+
+
+redux-toolkit.js.org
+
+npm install @reduxjs/toolkit	-- дає RTK queary
+npm install react-redux
+
+
+створ папку store	--	е налаштування reducer store
+	==store.js
+	
+import { configureStore } from "@reduxjs/toolkit";
+
+	export const store = configureStore({
+		reducer: {}
+})
+
+	==main.jsx	 підключаємо store
+	
+import { store } from "./store/store.js";
+import { Provider } from "react-redux";
+
+	<Provider store={store}>
+		<App />
+	</Provider>
+
+
+Reducer - manager його state - його категорія
+	
+
+store/reducers/bookReducer/bookReducer.js
+
+JSX -- писати HTML у JS коді
+
+ кожен Reducer приймає (state,action)
+ 
+ 
+ 
+ 
+ ==bookReducer.js
+	
+ const initState = {	-- початкове значення state
+		books: [],
+		isLoaded: false
+ }	
+						 //початкове значення
+export const bookReducer = (state = initState, action) => {
+
+}	-- буде змінювати initState
+
+
+
+
+ ==store.js
+
+import { configureStore } from "@reduxjs/toolkit";
+import { bookReducer } from "./reducers/bookReducer/bookReducer";
+
+
+ export const store = configureStore { -- створюємо сховище і передаємо налаштквання
+		
+		reducer: rootReducer
+}	
+
+
+   store/reducers/rootReducer	-- список всіх reducer
+
+створюємо rootReducer	--	reducer який головний у якому інші він об'єднує всіх
+
+import { combineReducers } from "@reduxjs/toolkit"
+
+  export const rootReducer combineReducers({
+	//редюсери
+	
+  	 book: bookReducer	--	По цій назві вичитуються Reducers
+  })
+
+
+redux devTools	--	розширення для тестування Redux
+
+https://chromewebstore.google.com/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=ru&pli=1
+
+
+	==bookReducer.js
+	
+const action = {	-- об'єкт 
+	type: "loadBooks",	-- назва action
+	payload: null		-- данні які ми зпишемо у state
+}
+	
+export const bookReducer = (state = initState, action) => {
+	switch(action.type) {
+		case "loadBooks":
+			return {...state, isLoaded: true, books: action.payload };
+	default:
+		return state;
+	}	
+}
+
+
+	==BookListPage
+
+import (useDispatch, useSelector) from "react-redux";
+
+	useDispatch	-- редагування сховища
+
+const dispatch = useDispatch('loadBooks')	-- функція яка генерує action
+
+fetchBooks {..
+	setBooks(booksData)
+	
+	dispatch { type: "loadBooks", payload: booksData };	--	запис у store нового state
+}
+
+useSelector -- для отримання з store
+useDispatch -- для запису у store
+
+
+// отримання масиву книг та стану завантаження
+
+const [ books, isLoaded ] = useSelector(state => state.book);
+
+
+
+case "deleteBook":
+	return {...state, books: 	//ВИДАЛЕННЯ		//самі вибираємл що передати у payload
+		state.books.filter(b=> b.id != action.payload) };
+
+
+
+const deleteClickHandle = async () => {
+	const booksUrl = import.meta.env.VITE_BOOKS_URL;
+	try {
+		await axios.delete(${booksUrl}/${id}');		--	видаляємо з бекенда
+		dispatch { type: "deleteBook", payload: book.id};	-- видаляємо з state
+		
+	dispatch { type: "updateBook", payload: newBook });	
+		
+		
+Redux	--	глобальний useState на всі компоненти щоб завжди була сама остання інформація	
+		
+----------------------------------------------
+14_	
+
+
