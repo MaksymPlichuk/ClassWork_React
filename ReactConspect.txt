@@ -5617,17 +5617,42 @@ import {  CircularProgress } from "@mui/material";
 ----------------------------------------------
 12_crud
 
- formik -- провалідує дані
- 
-htmlFor	--	мета тег для seo
+	🔀Алгорити створення Formik
 
-import {ref} from 
+ 1.	пишемо initValues
+ 2.	const formik = useFormik.. initValues onSumbit
+ 3. onSubmit formik.handleSubmit
+ 4. onChange={formik.handleChange} OnBlur value=formik.values
+ 5. handleSubmit
+ 6. ValidationScheme
 
-.oneOf()	-- перевірка на унікальність
 
+ htmlFor	--	мета тег для seo
+
+import { object, string, ref } from "yup";
+
+
+ confirmPassword: string()
+            .required("Обов'язкове поле")
+            .min(6, "Мінімальна довжина 6 символів")
+            .oneOf([ref("password"), null], "Паролі повинні збігатися"), -- перевірка чи співпадають
+
+
+							//предикат
+const index = users.findIndex(u => u.email === userData.email);	-- пошук користувача з такою самою поштою
+	
+	if(index !== -1) {
+            alert(`Користувач з поштою '${userData.email}' вже існує`);
+            return;
+        }
 
 delete userData.confirmPassword;	--	видалити властивість
 
+
+	Password ніколи не вертається з backend
+
+
+	==AuthContext
 
 const [user, setUser] useState(null);	-- створ змінну яка зберігатиме user
 	function login() {
@@ -5638,7 +5663,7 @@ const [user, setUser] useState(null);	-- створ змінну яка збер
 	}
 }
 
-<AuthContext. Provider value={.. user }>
+<AuthContext.Provider value={.. user }>
 
 	
 	==BookListPage
@@ -5646,29 +5671,63 @@ const [user, setUser] useState(null);	-- створ змінну яка збер
 {isAuth && user.role === "admin" && (
 	<Grid size={books.length % 3 === 0 ? 12 4}>
 
+
 	==App.jsx
 
 				//ховаємо маршрути якщо не має прав
 <Route index element={<BookListPage />} />
 	{isAuth && user.role === "admin" &&
+			<Route
+			path="create"
+			element={<BookCreateForm />}
+			/>
 		<Route
-		path="create"
-		element={<BookCreateForm />}
+		path="update/:id"
+		element={<BookUpdateForm />}
 		/>
-	<Route
-	path="update/:id"
-	element={<BookUpdateForm />}
-	/>
+	}
 </>	
 
 
 
 somee.com	-- 1 безкоштовний хостинг для сервера
 
-swagger	--	автоматично генерує crud для api
+swagger	--	дозволяє створити crud для api
 
- post	--	створення
+ get	--	отримати
+ post	--	додати
+ put	--	оновити
+ delete	--	видалити
+ 
  put	-- post + id
+
+
+-Підстроюємо під api fetch
+
+	   async function fetchBooks() {
+        const baseUrl = "https://pd411.somme.com/api/books";
+		
+        const pageCount = 15;
+        const page = 1;
+        const url = `${booksUrl}?page_size=${pageCount}&page=${page}`;
+
+        const response = await axios.get(url);
+        const { data, status } = response;
+        if (status === 200) {
+            const booksData = [];
+            for (const book of data.data.items) {
+                const formated = {
+                    id: book.id,
+                    title: book.title,
+                    author: book.author.name,
+                    cover_url: book.image,
+                    rating: book.rating,
+                    isFavorite: false,
+                };
+
+
+ так як у url повторюється 'https://pd411.somme.com/api' тому її краще винести у глобальну змінну
+
 
 
 .env	--	environment глобальні змінні для всього проекту 
@@ -5676,23 +5735,33 @@ swagger	--	автоматично генерує crud для api
 
 VITE_	--	обов'язкова частина для environment
 
+
 VITE_BASE_API_URL=https://pd411.somee.com/api/	-- після цього треба зробитти рестарт проекта
 
 	Vite на етапі білду підставляє ці значення в JS-код.
 
-‎books_shop/.env
+корінь папки/.env
 	VITE_BOOKS_URL=https://pd411.somee.com/api/books
 
 
 		==BookListPage
-const booksUrl = import.meta.env.VITE_BOOKS_URL;
-const pageCount = 15;
+		
+const booksUrl = import.meta.env.VITE_BOOKS_URL;	--	✅витягуємо змінну
+
+
 				
 		//робимо queary через `?`		
 const url = `${booksUrl}?page_size=${pageCount}&page=${page}`;
 
 
-	==BookCreateForm
+	frontend пишеться під backend
+		input щоб співпадали як на api
+
+fetch не маж вбудованого post
+
+
+
+	==BookCreateForm	POST
 	
 function handleSubmit(newBook) {
 
@@ -5705,8 +5774,85 @@ function handleSubmit(newBook) {
 		}
 
 }
-	data	--	те що вертає axios
+	
+ axios.post(booksUrl, newBook)
+ 		//або
+ axios({
+ 	 url:	bookUrl,
+ 	 method: "post",		--	метод
+ 	 data: newBook		-- що передати
+ })
+
+
+data	--	те що вертає backend у відповідь
+
+
+	==BookListPage
+
+
+	for (const book of data.data.items) {
+                const formated = {
+                    id: book.id,
+                    title: book.title,
+                    author: book.author.name,
+                    cover_url: book.image,
+                    rating: book.rating,
+                    isFavorite: false,
+                };
+
+
+	так як інпути співпадають з api параметрами спрощуємо запис
+
+	 for (const book of data.data.items) {
+                const formated = {
+                    ...book,
+                    author: book.author ? book.author.name : "невідомий",
+                    isFavorite: false,
+                };
+
+
+	==BookUpdateForm	GET
+	
+   useEffect(() => {
+        const readBook = async () => {							--створ async функцію бо useEffect не async
+            const booksUrl = import.meta.env.VITE_BOOKS_URL;
+            
+            const response = await axios.get(`${booksUrl}/${id}`);	-- get запит
+			
+			
+            if(response.status === 200) {
+                const {data} = response;
+                const oldBook = data.data;
+                await formik.setValues(oldBook, false);		-- записуємо у інпути значення
+			}
+		}
+		readBook()	-- викликаємо async функцію
+
+
+useState	-- керований інпут
+useRef		-- НЕ керований інпут бо вичитуємо у Submit
+
+ input name -- має співпадати з назвою на backend
 
 
 
+	==BookCard	DELETE
 
+
+ const deleteClickHandle = async () => {
+        await deleteCallback(book.id);
+    };
+	
+	==BookListPage
+const deleteBook = async (id) => {
+        const booksUrl = import.meta.env.VITE_BOOKS_URL;
+        try {
+            await axios.delete(`${booksUrl}/${id}`);
+        } catch(error){
+            console.log(error);
+        }
+        await fetchBooks();
+    };
+
+----------------------------------------------
+13_
