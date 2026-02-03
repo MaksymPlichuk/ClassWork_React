@@ -21,32 +21,34 @@ const BookListPage = ({ role }) => {
     }, [])
 
     async function fetchBooks() {
-        const baseUrl = `https://api.bigbookapi.com/search-books`;
-        const bookNumber = 5;
-        const api = `dd33b0978ebd4fef81fd64cede9608f1`;
-        const url = `${baseUrl}?number=${bookNumber}&min-rating=0.3&api-key=${api}`
+        const baseUrl = import.meta.env.VITE_BOOKS_URL;
+        const pageSize = 5;
+        const page = 1;
+        const url = `${baseUrl}?page=${page}&page_size=${pageSize}`
 
+        console.log(url)
         const resp = await axios.get(url);
         const { data, status } = resp;
-        if (status == 200) {
-            const booksData = []
-            for (const [book] of data.books) {
-                const formated = {
-                    id: book.id,
-                    title: book.title,
-                    authorName: book.authors[0].name,
-                    coverUrl: book.image,
-                    rating: book.rating?.average ?? 0,
-                    isFavorite: false
-                };
-                booksData.push(formated);
-            }
-            setBooks(booksData);
-            setLoading(false);
-            localStorage.setItem('books', JSON.stringify(booksData));
-        } else {
-            alert("Some Error")
-        }
+        console.log(resp);
+        // if (status == 200) {
+        //     const booksData = []
+        //     for (const book of data.data.books) {
+        //         const formated = {
+        //             id: book.id,
+        //             title: book.title,
+        //             authorName: book.authors[0].name,
+        //             coverUrl: book.image,
+        //             rating: book.rating?.average ?? 0,
+        //             isFavorite: false
+        //         };
+        //         booksData.push(formated);
+        //     }
+        //     setBooks(booksData);
+        //     setLoading(false);
+        //     localStorage.setItem('books', JSON.stringify(booksData));
+        // } else {
+        //     alert("Some Error")
+        // }
     }
 
     const removeBook = (id) => {

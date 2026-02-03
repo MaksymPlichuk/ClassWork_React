@@ -17,6 +17,7 @@ import { lightTheme } from './pages/theme/lightTheme'
 import { darkTheme } from './pages/theme/darkTheme'
 import { ThemeContext } from './pages/context/ThemeContext'
 import BookDescription from './pages/booksPage/BookDescription'
+import RegisterPage from './pages/auth/registerPage/RegisterPage'
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
 
             <Route path='*' element={<ErrorPage />} />
             <Route path='/login' element={<LoginPage setRoleCallBack={setRole} />} />
+            <Route path='/register' element={<RegisterPage setRoleCallBack={setRole} />} />
           </Route>
         </Routes>
       </ThemeProvider>
