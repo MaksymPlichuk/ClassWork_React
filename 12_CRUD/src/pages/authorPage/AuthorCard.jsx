@@ -31,33 +31,26 @@ const AuthorCard = ({ author, removeAuthorCallBack, setFavoriteCallBack }) => {
     return (
         <Card sx={{ maxWidth: 345, height: "100%" }}>
             <CardHeader
-                avatar={
-                    <Avatar
-                        sx={{ bgcolor: red[500] }}
-                        aria-label="recipe"
-                        src={author.imageUrl ? author.imageUrl : "https://media.istockphoto.com/id/1016744034/vector/profile-placeholder-image-gray-silhouette-no-photo.jpg?s=612x612&w=0&k=20&c=Rqti26VQj_fs-_hL15mJj6b84FEZNa00FJgZRaG5PD4="}
-                    ></Avatar>
-                }
+
                 action={
                     <IconButton onClick={removeAuthorHandle} color='error' aria-label="settings">
                         <DeleteIcon />
                     </IconButton>
                 }
-                title={author.firstName + " " + author.lastName}
-                subheader={author.author}
+                title={author.name}
             />
             <CardMedia
                 sx={{ objectFit: "contain" }}
                 component="img"
                 height="350"
                 image={
-                    author.imageUrl ? author.imageUrl : "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-18055.jpg"
+                    author.image ? author.image : "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-18055.jpg"
                 }
-                alt={author.firstName}
+                alt={author.name}
             />
             <CardContent>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {author.country}, {author.birthday}
+                    {author.birth_date}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>

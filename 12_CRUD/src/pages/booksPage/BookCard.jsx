@@ -16,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import { Rating } from "@mui/material";
 
-const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack, role }) => {
+const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack, role, b }) => {
     const [isFavorite, setIsFavorite] = useState(book.isFavorite);
 
     const deleteCardHandle = () => {
@@ -47,18 +47,20 @@ const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack, role }) => {
                 title={book.title}
                 subheader={book.authorName}
             />
-            <CardMedia
-                sx={{ objectFit: "contain" }}
-                component="img"
-                height="350"
-                image={
-                    book.coverUrl ? book.coverUrl : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
-                }
-                alt={book.title}
-            />
+            <Link to={`/books/description/${b.id}`}>
+                <CardMedia
+                    sx={{ objectFit: "contain" }}
+                    component="img"
+                    height="350"
+                    image={
+                        book.coverUrl ? book.coverUrl : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
+                    }
+                    alt={book.title}
+                />
+            </Link>
             <CardContent>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    <Rating name="read-only" max={5} readOnly value={Math.round(book.rating * 10)/2} />
+                    <Rating name="read-only" max={5} readOnly value={Math.round(book.rating)} />
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
@@ -68,7 +70,7 @@ const BookCard = ({ book, removeBookCallBack, setFavoriteCallBack, role }) => {
                     <FavoriteIcon />
                 </IconButton>
 
-                {!role == "user" ?
+                {role != "user" ?
                     <Link to={`update/${book.id}`}>
                         <IconButton aria-label="share" color='success'>
                             <EditIcon />

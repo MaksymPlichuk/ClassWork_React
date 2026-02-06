@@ -4,24 +4,38 @@ import authorsJson from "./authors.json"
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
+import axios from "axios";
 
 const AuthorListPage = () => {
     const [authors, setAuthors] = useState([]);
+    const baseURL = import.meta.env.VITE_AUTHORS_URL;
 
     useEffect(() => {
-        const localData = localStorage.getItem("authors")
-        if (localData) {
-            setAuthors(JSON.parse(localData));
-        } else {
-            setAuthors(authorsJson);
-            localStorage.setItem("authors", JSON.stringify(authorsJson));
-        }
+        fetchAuthors();
     }, [])
 
-    const removeAuthor = (id) => {
+    async function fetchAuthors() {
+        const response = await axios.get(`${baseURL}?page_size=20&page=2`);  //?page_size=20&page=2
+
+        const { data, status } = response;
+        if (status == 200) {
+            const newAuthors = []
+            for (const author of data.data.items) {
+                newAuthors.push(author)
+            }
+            setAuthors(newAuthors);
+            console.log(newAuthors);
+        }
+    }
+
+    const removeAuthor = async (id) => {
         const newList = authors.filter(b => b.id !== id)
         setAuthors(newList);
-        localStorage.setItem("authors", JSON.stringify(newList));
+        try {
+           await axios.delete(`${baseURL}/${id}`);
+        } catch (error) {
+            console.warn(error);
+        }
     }
     const setFavorite = (id, state) => {
         const newList = [...authors];

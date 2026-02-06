@@ -9,6 +9,7 @@ import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { replace, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -55,12 +56,13 @@ const BookUpdateForm = () => {
 
     const [formValues, setFormValues] = useState({
         title: "",
-        authorName: "",
-        genre: "",
-        year: "",
-        coverUrl: ""
+        description: "",
+        image: "",
+        rating: 1,
+        number_of_pages: 10,
+        publish_date: 2000,
     })
-
+    const baseURL = import.meta.env.VITE_BOOKS_URL;
     function onChangeHandle(event) {
         const { name, value } = event.target;
         setFormValues({ ...formValues, [name]: value });
@@ -88,14 +90,6 @@ const BookUpdateForm = () => {
             result = false;
         }
 
-        if (formValues.genre.length == 0) {
-            validateErros.genre = "Обов'язкове поле";
-            result = false;
-        } else if (formValues.genre.length > 50) {
-            validateErros.genre = "Максимальна довжина 50 символів";
-            result = false;
-        }
-
         const maxYear = new Date().getFullYear();
         if (formValues.year.length == 0) {
             validateErros.year = "Обов'язкове поле";
@@ -112,26 +106,24 @@ const BookUpdateForm = () => {
     }
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const validateRes = validate();
+        // const validateRes = validate();
 
-        if (!validateRes.result) {
-            setErrors(validateRes.errors);
-            return;
-        } else {
-            setErrors({});
-        }
+        // if (!validateRes.result) {
+        //     setErrors(validateRes.errors);
+        //     return;
+        // } else {
+        //     setErrors({});
+        // }
 
-        const localData = localStorage.getItem("books");
-        if (localData) {
-            const books = JSON.parse(localData);
-            const index = books.findIndex(b => b.id == id);
-            books[index] = formValues;
-            localStorage.setItem("books", JSON.stringify(books));
+
+        const response = await axios.put(baseURL, formValues)
+        const { status } = response;
+        if (status == 200) {
+            navigate("/books")
         }
-        navigate("/books")
     };
 
     const getError = (prop) => {
@@ -143,17 +135,26 @@ const BookUpdateForm = () => {
     };
 
     useEffect(() => {
-        const localData = localStorage.getItem("books");
-        if (localData) {
-            const books = JSON.parse(localData);
-            const book = books.find((b) => b.id == id);
-            if (!book) {
-                navigate("/books", { replace: true })
+        const loadBook = async () => {
+
+            const response = axios.get(`${baseURL}/${id}`)
+            const { data, status } = await response;
+
+            if (status == 200) {
+                // const formated = {
+                //     title: data.data.title,
+                //     authorName: data.data.author.name,
+                //     year: data.data.publish_date,
+                //     image: data.data.image,
+                //     number_of_pages: data.data.number_of_pages,
+                //     rating: data.data.rating,
+                // }
+                const loadedBook = data.data
+                setFormValues(loadedBook);
             }
-            setFormValues(book);
-        } else {
-            navigate("/books", { replace: true })
+
         }
+        loadBook();
     }, [])
 
     return (
@@ -194,7 +195,7 @@ const BookUpdateForm = () => {
                             />
                         </FormControl>
                         {getError("title")}
-                        <FormControl>
+                        {/* <FormControl>
                             <FormLabel htmlFor="authorName">Автор</FormLabel>
                             <TextField
                                 name="authorName"
@@ -206,43 +207,54 @@ const BookUpdateForm = () => {
                                 onChange={onChangeHandle}
                             />
                         </FormControl>
-                        {getError("authorName")}
+                        {getError("authorName")} */}
                         <FormControl>
-                            <FormLabel htmlFor="genre">Жанр</FormLabel>
+                            <FormLabel htmlFor="number_of_pages">К-сть сторінок</FormLabel>
                             <TextField
-                                name="genre"
-                                placeholder="Жанр"
-                                autoComplete="genre"
+                                name="number_of_pages"
+                                placeholder="150"
+                                autoComplete="number_of_pages"
                                 fullWidth
                                 variant="outlined"
-                                value={formValues.genre}
+                                value={formValues.number_of_pages}
                                 onChange={onChangeHandle}
                             />
                         </FormControl>
-                        {getError("genre")}
                         <FormControl>
-                            <FormLabel htmlFor="year">Рік</FormLabel>
+                            <FormLabel htmlFor="rating">Рейтинг</FormLabel>
                             <TextField
-                                name="year"
+                                name="rating"
+                                placeholder="5"
+                                autoComplete="rating"
+                                fullWidth
+                                variant="outlined"
+                                value={formValues.rating}
+                                onChange={onChangeHandle}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="publish_date">Рік</FormLabel>
+                            <TextField
+                                name="publish_date"
                                 placeholder="Рік публікацї"
-                                autoComplete="year"
+                                autoComplete="publish_date"
                                 fullWidth
                                 type="number"
                                 variant="outlined"
-                                value={formValues.year}
+                                value={formValues.publish_date}
                                 onChange={onChangeHandle}
                             />
                             {getError("year")}
                         </FormControl>
                         <FormControl>
-                            <FormLabel htmlFor="coverUrl">Обкладинка</FormLabel>
+                            <FormLabel htmlFor="image">Обкладинка</FormLabel>
                             <TextField
-                                name="coverUrl"
+                                name="image"
                                 placeholder="Обкладинка"
-                                autoComplete="coverUrl"
+                                autoComplete="image"
                                 fullWidth
                                 variant="outlined"
-                                value={formValues.coverUrl}
+                                value={formValues.image}
                                 onChange={onChangeHandle}
                             />
                         </FormControl>

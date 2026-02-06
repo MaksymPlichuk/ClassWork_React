@@ -93,29 +93,25 @@ const LoginPage = ({ setRoleCallBack }) => {
             setErrors({});
         }
 
-        setUserRole(cred)
+        const localData = localStorage.getItem("auth");
+        if (!localData) {
+            navigate("/register");
+            return;
+        }
+        if (localData) {
+            const user = localStorage.find(u => u.email == cred.email);
+            console.log(user);
+            if (!user || user.password != cred.password) {
+                alert("Неправильний пароль або пошта")
+                return;
+            }
+        }
 
         login();
         navigate("/", { replace: true });
 
     }
 
-    const setUserRole = (cred) => {
-        const localData = localStorage.getItem("auth");
-        if (!localData) {
-            cred.role = "admin";
-            localStorage.setItem("auth", JSON.stringify([cred]));
-            return;
-        }
-        else {
-            cred.role = "user";
-            setRoleCallBack("user")
-        }
-        const oldCreds = JSON.parse(localData);
-        const newCreds = [...oldCreds, cred];
-        localStorage.setItem("auth", JSON.stringify(newCreds));
-        return;
-    }
 
     function validate(formValues) {
         const validateErrors = {};

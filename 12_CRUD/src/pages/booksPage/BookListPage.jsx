@@ -11,50 +11,52 @@ const BookListPage = ({ role }) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const localData = localStorage.getItem("books")
-        if (localData) {
-            setBooks(JSON.parse(localData));
-            setLoading(false)
-        } else {
-            fetchBooks();
-        }
+        fetchBooks();
     }, [])
 
+    const baseUrl = import.meta.env.VITE_BOOKS_URL;
     async function fetchBooks() {
-        const baseUrl = import.meta.env.VITE_BOOKS_URL;
         const pageSize = 5;
         const page = 1;
         const url = `${baseUrl}?page=${page}&page_size=${pageSize}`
 
         console.log(url)
-        const resp = await axios.get(url);
+        const resp = await axios.get(url);  //?page_size=20&page=6
         const { data, status } = resp;
         console.log(resp);
-        // if (status == 200) {
-        //     const booksData = []
-        //     for (const book of data.data.books) {
-        //         const formated = {
-        //             id: book.id,
-        //             title: book.title,
-        //             authorName: book.authors[0].name,
-        //             coverUrl: book.image,
-        //             rating: book.rating?.average ?? 0,
-        //             isFavorite: false
-        //         };
-        //         booksData.push(formated);
-        //     }
-        //     setBooks(booksData);
-        //     setLoading(false);
-        //     localStorage.setItem('books', JSON.stringify(booksData));
-        // } else {
-        //     alert("Some Error")
-        // }
+        if (status == 200) {
+            const booksData = []
+            for (const book of data.data.items) {
+                const formated = {
+                    id: book.id,
+                    title: book.title,
+                    authorName: book.author ? book.author.name : "Unknown",
+                    coverUrl: book.image,
+                    rating: book.rating ? book.rating : 0,
+                    isFavorite: false,
+                    numberOfPages: book.numberOfPages,
+                    year: book.publishDate
+                };
+                booksData.push(formated);
+            }
+            setBooks(booksData);
+            setLoading(false);
+        } else {
+            alert("Some Error")
+        }
     }
 
-    const removeBook = (id) => {
+    const removeBook = async (id) => {
         const newList = books.filter(b => b.id !== id)
         setBooks(newList);
-        localStorage.setItem("books", JSON.stringify(newList));
+        try {
+            await axios.delete(`${baseUrl}/${id}`);
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+        await fetchBooks();
     }
     const setFavorite = (id, state) => {
         const newList = [...books];
@@ -68,9 +70,9 @@ const BookListPage = ({ role }) => {
 
     if (loading) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 5,flexDirection:"column",alignItems:"center" }}>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 5, flexDirection: "column", alignItems: "center" }}>
                 <Typography variant="h5">Loading Data...</Typography>
-                <CircularProgress enableTrackSlot size="3rem" sx={{mt: 5}} />
+                <CircularProgress enableTrackSlot size="3rem" sx={{ mt: 5 }} />
             </Box>
         );
     }
@@ -82,15 +84,13 @@ const BookListPage = ({ role }) => {
             <Grid container spacing={2} mx="100px" my="50px">
                 {books.map((b) => (
                     <Grid size={3} key={b.id}>
-                        <Link to={`/books/description/${b.id}`}>
-                            <BookCard book={b} removeBookCallBack={removeBook} setFavoriteCallBack={setFavorite} role={role} />
-                        </Link>
+                        <BookCard book={b} removeBookCallBack={removeBook} setFavoriteCallBack={setFavorite} role={role} b={b} />
                     </Grid>
                 ))}
                 <Grid size={books.length % 4 == 0 ? 12 : 3} >
                     <Box sx={{ width: "100%", justifyContent: "center", height: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
-                        {!role == "user" ?
+                        {role != "user" ?
                             <Link to="create">
                                 <IconButton color="secondary">
                                     <AddCircleIcon sx={{ fontSize: "3em" }} />

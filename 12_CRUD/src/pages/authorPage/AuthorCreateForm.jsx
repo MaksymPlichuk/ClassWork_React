@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 
 
@@ -56,34 +57,28 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const initValues = {
-    firstName: "",
-    lastName: "",
-    birthday: "",
-    country: "",
-    imageUrl: "",
+    name: "",
+    birth_date: "",
+    image: "",
 };
 
-
+const baseURL = import.meta.env.VITE_AUTHORS_URL;
 const AuthorCreateForm = () => {
-
     const navigate = useNavigate();
 
-    const handleSubmit = (newAuthor) => {
+    const handleSubmit = async (newAuthor) => {
         console.log(newAuthor);
 
-        let authors = [];
-        const localData = localStorage.getItem("authors");
-        if (localData) {
-            authors = JSON.parse(localData);
+        try {
+            const resp = await axios.post(baseURL, newAuthor);
+            if (resp.status == 200) {
+                console.log("author Added");
+                navigate("/authors")
+            }
+        } catch (error) {
+            console.warn(error);
         }
-        const id = authors.reduce((acc, authors) => Math.max(acc, authors.id), 0) + 1;
-        newAuthor.id = id;
-        newAuthor.isFavorite = false;
 
-        const newList = [...authors, newAuthor];
-        localStorage.setItem("authors", JSON.stringify(newList));
-
-        navigate('/authors')
     }
 
     const getError = (prop) => {
@@ -95,10 +90,8 @@ const AuthorCreateForm = () => {
     };
 
     const validationScheme = object({
-        firstName: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),
-        lastName: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),
-        birthday: string().required("Обов'язкове поле").matches(/\d{4}-\d{2}-\d{2}/, "Тип введення yyyy-MM-dd"),
-        country: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів")
+        name: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),
+        birth_date: string().required("Обов'язкове поле").matches(/\d{4}-\d{2}-\d{2}/, "Тип введення yyyy-MM-dd")
     });
 
     const formik = useFormik({
@@ -132,75 +125,45 @@ const AuthorCreateForm = () => {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="firstName">Ім'я</FormLabel>
+                            <FormLabel htmlFor="name">Ім'я</FormLabel>
                             <TextField
-                                name="firstName"
+                                name="name"
                                 placeholder="Ім'я автора"
-                                autoComplete="firstName"
+                                autoComplete="name"
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formik.values.firstName}
+                                value={formik.values.name}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {getError("firstName")}
+                            {getError("name")}
                         </FormControl>
                         <FormControl>
-                            <FormLabel htmlFor="lastName">Прізвище</FormLabel>
+                            <FormLabel htmlFor="birth_date">Дата народження</FormLabel>
                             <TextField
-                                name="lastName"
-                                placeholder="Прізвище автора"
-                                autoComplete="lastName"
-                                fullWidth
-                                type="text"
-                                variant="outlined"
-                                value={formik.values.lastName}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {getError("lastName")}
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="birthday">Дата народження</FormLabel>
-                            <TextField
-                                name="birthday"
+                                name="birth_date"
                                 placeholder="Дата народження автора"
-                                autoComplete="birthday"
+                                autoComplete="birth_date"
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formik.values.birthday}
+                                value={formik.values.birth_date}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {getError("birthday")}
+                            {getError("birth_date")}
                         </FormControl>
                         <FormControl>
-                            <FormLabel htmlFor="country">Країна</FormLabel>
+                            <FormLabel htmlFor="image">Фото</FormLabel>
                             <TextField
-                                name="country"
-                                placeholder="Ім'я автора"
-                                autoComplete="country"
-                                fullWidth
-                                type="text"
-                                variant="outlined"
-                                value={formik.values.country}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {getError("country")}
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="imageUrl">Фото</FormLabel>
-                            <TextField
-                                name="imageUrl"
+                                name="image"
                                 placeholder="Посилання на фото"
-                                autoComplete="imageUrl"
+                                autoComplete="image"
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formik.values.imageUrl}
+                                value={formik.values.image}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />

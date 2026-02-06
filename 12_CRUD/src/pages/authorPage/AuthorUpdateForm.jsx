@@ -9,6 +9,7 @@ import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { replace, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -55,11 +56,9 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 const AuthorUpdateForm = () => {
 
     const [formValues, setFormValues] = useState({
-        firstName: "",
-        lastName: "",
-        birthday: "",
-        country: "",
-        imageUrl: "",
+        name: "",
+        birth_date: "",
+        image: "",
     })
 
     function onChangeHandle(event) {
@@ -67,6 +66,7 @@ const AuthorUpdateForm = () => {
         setFormValues({ ...formValues, [name]: value });
     }
 
+    const baseURL = import.meta.env.VITE_AUTHORS_URL;
     const [errors, setErrors] = useState({})
     const navigate = useNavigate();
     const { id } = useParams();
@@ -75,36 +75,20 @@ const AuthorUpdateForm = () => {
         const validateErros = {};
         let result = true;
 
-        if (formValues.firstName.length == 0) {
-            validateErros.firstName = "Обов'язкове поле";
+        if (formValues.name.length == 0) {
+            validateErros.name = "Обов'язкове поле";
             result = false;
-        } else if (formValues.firstName.length > 100) {
-            validateErros.firstName = "Максимальна довжина 100 символів";
-            result = false;
-        }
-
-        if (formValues.lastName.length == 0) {
-            validateErros.lastName = "Обов'язкове поле";
-            result = false;
-        } else if (formValues.lastName.length > 100) {
-            validateErros.lastName = "Максимальна довжина 100 символів";
+        } else if (formValues.name.length > 100) {
+            validateErros.name = "Максимальна довжина 100 символів";
             result = false;
         }
 
         const birthdayRegex = /\d{4}-\d{2}-\d{2}/;
-        if (formValues.birthday.length == 0) {
-            validateErros.birthday = "Обов'язкове поле";
+        if (formValues.birth_date.length == 0) {
+            validateErros.birth_date = "Обов'язкове поле";
             result = false;
-        } else if (!birthdayRegex.test(formValues.birthday)) {
-            validateErros.birthday = "Тип введення yyyy-MM-dd";
-            result = false;
-        }
-
-        if (formValues.country.length == 0) {
-            validateErros.country = "Обов'язкове поле";
-            result = false;
-        } else if (formValues.country.length > 100) {
-            validateErros.country = "Максимальна довжина 100 символів";
+        } else if (!birthdayRegex.test(formValues.birth_date)) {
+            validateErros.birth_date = "Тип введення yyyy-MM-dd";
             result = false;
         }
 
@@ -112,7 +96,7 @@ const AuthorUpdateForm = () => {
     }
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const validateRes = validate();
@@ -124,14 +108,19 @@ const AuthorUpdateForm = () => {
             setErrors({});
         }
 
-        const localData = localStorage.getItem("authors");
-        if (localData) {
-            const authors = JSON.parse(localData);
-            const index = authors.findIndex(a => a.id == id);
-            authors[index] = formValues;
-            localStorage.setItem("authors", JSON.stringify(authors));
+        try {
+            const resp = await axios.put(baseURL, formValues);
+            const { status } = resp
+            console.log(resp);
+            if (status == 200) {
+                navigate("/authors")
+            }
+
+        } catch (error) {
+            console.log(error);
+
         }
-        navigate("/authors")
+        
     };
 
     const getError = (prop) => {
@@ -142,18 +131,20 @@ const AuthorUpdateForm = () => {
         ) : null;
     };
 
+
     useEffect(() => {
-        const localData = localStorage.getItem("authors");
-        if (localData) {
-            const authors = JSON.parse(localData);
-            const author = authors.find((a) => a.id == id);
-            if (!author) {
+        async function fetchAuthors() {
+            const resp = await axios.get(`${baseURL}/${id}`)
+            const { data, status } = resp;
+
+            if (status == 200) {
+                console.warn(data);
+                setFormValues(data.data)
+            } else {
                 navigate("/authors", { replace: true })
             }
-            setFormValues(author);
-        } else {
-            navigate("/authors", { replace: true })
         }
+        fetchAuthors();
     }, [])
 
     return (
@@ -181,71 +172,44 @@ const AuthorUpdateForm = () => {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="firstName">Ім'я</FormLabel>
+                            <FormLabel htmlFor="name">Ім'я</FormLabel>
                             <TextField
-                                name="firstName"
+                                name="name"
                                 placeholder="Ім'я автора"
-                                autoComplete="firstName"
+                                autoComplete="name"
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formValues.firstName}
+                                value={formValues.name}
                                 onChange={onChangeHandle}
                             />
-                            {getError("firstName")}
+                            {getError("name")}
                         </FormControl>
                         <FormControl>
-                            <FormLabel htmlFor="lastName">Прізвище</FormLabel>
+                            <FormLabel htmlFor="birth_date">Дата народження</FormLabel>
                             <TextField
-                                name="lastName"
-                                placeholder="Прізвище автора"
-                                autoComplete="lastName"
-                                fullWidth
-                                type="text"
-                                variant="outlined"
-                                value={formValues.lastName}
-                                onChange={onChangeHandle}
-                            />
-                            {getError("lastName")}
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="birthday">Дата народження</FormLabel>
-                            <TextField
-                                name="birthday"
+                                name="birth_date"
                                 placeholder="Дата народження автора"
-                                autoComplete="birthday"
+                                autoComplete="birth_date"
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formValues.birthday}
+                                value={formValues.birth_date}
                                 onChange={onChangeHandle}
                             />
-                            {getError("birthday")}
+                            {getError("birth_date")}
                         </FormControl>
+
                         <FormControl>
-                            <FormLabel htmlFor="country">Країна</FormLabel>
+                            <FormLabel htmlFor="image">Фото</FormLabel>
                             <TextField
-                                name="country"
-                                placeholder="Ім'я автора"
-                                autoComplete="country"
-                                fullWidth
-                                type="text"
-                                variant="outlined"
-                                value={formValues.country}
-                                onChange={onChangeHandle}
-                            />
-                            {getError("country")}
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="imageUrl">Фото</FormLabel>
-                            <TextField
-                                name="imageUrl"
+                                name="image"
                                 placeholder="Посилання на фото"
-                                autoComplete="imageUrl"
+                                autoComplete="image"
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formValues.imageUrl}
+                                value={formValues.image}
                                 onChange={onChangeHandle}
                             />
                         </FormControl>

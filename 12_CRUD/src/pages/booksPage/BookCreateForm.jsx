@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -55,10 +56,10 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 const initValues = {
     title: "",
-    author: "",
-    genre: "",
-    year: "",
-    cover: "",
+    description: "",
+    image: "",
+    rating: 0,
+    publishDate: 2000,
 };
 
 const BookCreateForm = () => {
@@ -67,22 +68,13 @@ const BookCreateForm = () => {
     const handleSubmit = (newBook) => {
         console.log(newBook);
 
-        let books = []
+        const bookUrl = import.meta.env.VITE_BOOKS_URL;
 
-        const localData = localStorage.getItem("books");
-        if (localData) {
-            books = JSON.parse(localData)
+        const response = axios.post(bookUrl, newBook);
+        if (response.status == 200) {
+            navigate("/books")
         }
 
-        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
-        newBook.id = id;
-        newBook.isFavorite = false;
-        newBook.coverUrl = newBook.cover;
-        delete newBook.cover;
-        const newList = [...books, newBook];
-
-        localStorage.setItem("books", JSON.stringify(newList));
-        navigate("/books")
     };
 
     const getError = (prop) => {
@@ -98,11 +90,7 @@ const BookCreateForm = () => {
         title: string()
             .required("Обов'язкове поле")
             .max(100, "Максимальна довжина 100 символів"),
-        author: string().max(100, "Максимальна довжина 100 символів"),
-        genre: string()
-            .required("Обов'язкове поле")
-            .max(50, "Максимальна довжина 50 символів"),
-        year: number()
+        publishDate: number()
             .min(0, "Рік не може бути від'ємним")
             .max(maxYear, `Рік не може бути більшим за ${maxYear}`)
             .required("Обов'язкове поле"),
@@ -154,61 +142,62 @@ const BookCreateForm = () => {
                         </FormControl>
                         {getError("title")}
                         <FormControl>
-                            <FormLabel htmlFor="author">Автор</FormLabel>
+                            <FormLabel htmlFor="description">Опис</FormLabel>
                             <TextField
-                                name="author"
-                                placeholder="Автор"
-                                autoComplete="author"
+                                name="description"
+                                placeholder="Опис"
+                                autoComplete="description"
                                 fullWidth
                                 variant="outlined"
-                                value={formik.values.author}
+                                value={formik.values.description}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
                         </FormControl>
-                        {getError("author")}
+                        {getError("description")}
                         <FormControl>
-                            <FormLabel htmlFor="genre">Жанр</FormLabel>
+                            <FormLabel htmlFor="image">Обкладинка</FormLabel>
                             <TextField
-                                name="genre"
-                                placeholder="Жанр"
-                                autoComplete="genre"
+                                name="image"
+                                placeholder="Обкладинка"
+                                autoComplete="image"
                                 fullWidth
                                 variant="outlined"
-                                value={formik.values.genre}
+                                value={formik.values.image}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
                         </FormControl>
-                        {getError("genre")}
+
                         <FormControl>
-                            <FormLabel htmlFor="year">Рік</FormLabel>
+                            <FormLabel htmlFor="rating">Рейтинг</FormLabel>
                             <TextField
-                                name="year"
+                                name="rating"
+                                placeholder="РЕйтинг"
+                                autoComplete="rating"
+                                fullWidth
+                                variant="outlined"
+                                value={formik.values.rating}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="publishDate">Рік</FormLabel>
+                            <TextField
+                                name="publishDate"
                                 placeholder="Рік публікацї"
-                                autoComplete="year"
+                                autoComplete="publishDate"
                                 fullWidth
                                 type="number"
                                 variant="outlined"
-                                value={formik.values.year}
+                                value={formik.values.publishDate}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {getError("year")}
+                            {getError("publishDate")}
                         </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="cover">Обкладинка</FormLabel>
-                            <TextField
-                                name="cover"
-                                placeholder="Обкладинка"
-                                autoComplete="cover"
-                                fullWidth
-                                variant="outlined"
-                                value={formik.values.cover}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                        </FormControl>
+
                         <Button
                             type="submit"
                             fullWidth

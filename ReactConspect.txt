@@ -6028,6 +6028,142 @@ const deleteClickHandle = async () => {
 Redux	--	глобальний useState на всі компоненти щоб завжди була сама остання інформація	
 		
 ----------------------------------------------
-14_	
+14_	Redux2
+
+
+const lambda = () => 1
+const lambda = () => { 1 }
+
+
+	==reducers/bookReducer/actions	-- тут пропичуємо логіку dipatch ів
+							виносимо логіку з handleSubmit
+	
+export const loadBooks = () => (dispatch) => {..
+}
+ вся логіка load,updateBook,createBook
+
+
+	створюмо файл якій збере всі reducer 
+
+reducerds/actionsCreator	
+	
+	import * as bookActions from "./bookReducer/actions"	-- об'єднує всі функції в 1 об'єкт
+	
+	
+		//	const bookActions = {loadBooks,	-- фкнкції створені у bookReducer/actions
+		//  createBook,
+		//  updateBook,
+		//  deleteBook }
+	
+	
+	
+	🟡export const actions = {	-- об'єкт який вміщає всі Actions
+		...bookActions,
+		...authActions
+	}
+
+
+
+	-створюємо власгий хук
+
+==store/hooks/useAction
+
+import { useDispatch from "react-redux"
+import { bindActionCreators from "@reduxjs/toolkit"
+import { actions } from "../reducers/actions Creator"
+
+
+🟡bindActionCreators -- бібліотечна функція який прив'язує dispatch до Action
+													передає Action в Dispatch
+
+
+export const useAction = () => {
+	const dispatch= useDispatch();
+	return bindActionCreators (actions, dispatch);	
+}
+
+
+
+
+імпортуємо хук 			//знає про всі action
+	const { loadBooks } = useAction();
+
+useEffect(() => {
+	loadBooks().then(result => );
+}, []);
+
+const BookCreateForm = () =>
+	const { createBook } = useAction();
+	
+	
+МЕТА переносимо логіку з SubmitHandle у Action в Reducer
+	
+
+reducer: return { ...state, isLoaded: true, books: action.payload);
+
+Reducer - обробляє action
+Action	--	що має бути з state
+
+
+
+-=-Для авторів
+
+папка authorReducer
+			actions.js
+			authorReducer.js
+			
+			
+		--actions.js
+	
+ export const loadAuthors = () => (dispatch) => {
+	const authorsUrl = import.meta.env.VITE_AUTHORS_URL;
+	const pageCount = 150;
+	const page = 1;
+	const url = ${authorsUrl}?page_size=${pageCount}&page=${page}`;
+		try {
+			const response = await axios.get(url);
+			if (response.status === 200) {
+				const { data } = response;
+				dispatch({ type: "loadAuthors", payload: data.data.items });
+			} else
+			return false;
+		} catch (error) {
+		throw error;
+	}
+
+
+rootReducer.js
+	export const rootReducer combineReducers({
+	
+	book: bookReducer,
+	author: authorReducer
+	})
+
+	
+	export const actions {
+		...bookActions,
+		...authActions,
+		...authorActions }
+		
+		
+		
+		
+ -- select
+
+ inivitValues {.. authorId = 0}
+ 
+<Select name="authorId" value={authors[0] ? authors[0].id: 0}>
+	<MenuItem value = {0} >Невідомий</MenuItem>
+		{authors.map((author) => (
+			<MenuItem key={author.id) value={author.id}>
+		{author.name}
+	</MenuItem>
+	))}
+</Select>
+		
+		
+		
+		
+
 
 
