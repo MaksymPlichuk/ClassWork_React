@@ -12,8 +12,6 @@ import { object, string, number } from "yup";
 import { useNavigate } from "react-router";
 import axios from "axios";
 
-
-
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
@@ -57,36 +55,27 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const initValues = {
-    name: "",
-    birth_date: "",
+    title: "",
+    description: "",
     image: "",
+    rating: 0,
+    publishDate: 2000,
 };
 
-const baseURL = import.meta.env.VITE_AUTHORS_URL;
-const AuthorCreateForm = () => {
+const BookCreateForm = () => {
     const navigate = useNavigate();
 
-    const handleSubmit = async (newAuthor) => {
-        console.log(newAuthor);
+    const handleSubmit = (newBook) => {
+        console.log(newBook);
 
-        const data = {
-            name: newAuthor.name,
-            image: newAuthor.image,
-            birthDate: newAuthor.birth_date
-        };
-        delete newAuthor.birth_date
+        const bookUrl = import.meta.env.VITE_BOOKS_URL;
 
-        try {
-            const resp = await axios.post(baseURL, data);
-            if (resp.status == 200) {
-                console.log("author Added");
-                navigate("/authors")
-            }
-        } catch (error) {
-            console.warn(error);
+        const response = axios.post(bookUrl, newBook);
+        if (response.status == 200) {
+            navigate("/books")
         }
 
-    }
+    };
 
     const getError = (prop) => {
         return formik.touched[prop] && formik.errors[prop] ? (
@@ -96,9 +85,15 @@ const AuthorCreateForm = () => {
         ) : null;
     };
 
+    const maxYear = new Date().getFullYear();
     const validationScheme = object({
-        name: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),
-        birth_date: string().required("Обов'язкове поле").matches(/\d{4}-\d{2}-\d{2}/, "Тип введення yyyy-MM-dd")
+        title: string()
+            .required("Обов'язкове поле")
+            .max(100, "Максимальна довжина 100 символів"),
+        publishDate: number()
+            .min(0, "Рік не може бути від'ємним")
+            .max(maxYear, `Рік не може бути більшим за ${maxYear}`)
+            .required("Обов'язкове поле"),
     });
 
     const formik = useFormik({
@@ -119,7 +114,7 @@ const AuthorCreateForm = () => {
                             fontSize: "clamp(2rem, 10vw, 2.15rem)",
                         }}
                     >
-                        Додавання автора
+                        Додавання нової книги
                     </Typography>
                     <Box
                         component="form"
@@ -132,48 +127,75 @@ const AuthorCreateForm = () => {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="name">Ім'я</FormLabel>
+                            <FormLabel htmlFor="title">Назва</FormLabel>
                             <TextField
-                                name="name"
-                                placeholder="Ім'я автора"
-                                autoComplete="name"
+                                name="title"
+                                placeholder="Назва книги"
+                                autoComplete="title"
+                                autoFocus
                                 fullWidth
-                                type="text"
                                 variant="outlined"
-                                value={formik.values.name}
+                                value={formik.values.title}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {getError("name")}
                         </FormControl>
+                        {getError("title")}
                         <FormControl>
-                            <FormLabel htmlFor="birth_date">Дата народження</FormLabel>
+                            <FormLabel htmlFor="description">Опис</FormLabel>
                             <TextField
-                                name="birth_date"
-                                placeholder="Дата народження автора"
-                                autoComplete="birth_date"
+                                name="description"
+                                placeholder="Опис"
+                                autoComplete="description"
                                 fullWidth
-                                type="text"
                                 variant="outlined"
-                                value={formik.values.birth_date}
+                                value={formik.values.description}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {getError("birth_date")}
                         </FormControl>
+                        {getError("description")}
                         <FormControl>
-                            <FormLabel htmlFor="image">Фото</FormLabel>
+                            <FormLabel htmlFor="image">Обкладинка</FormLabel>
                             <TextField
                                 name="image"
-                                placeholder="Посилання на фото"
+                                placeholder="Обкладинка"
                                 autoComplete="image"
                                 fullWidth
-                                type="text"
                                 variant="outlined"
                                 value={formik.values.image}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel htmlFor="rating">Рейтинг</FormLabel>
+                            <TextField
+                                name="rating"
+                                placeholder="РЕйтинг"
+                                autoComplete="rating"
+                                fullWidth
+                                variant="outlined"
+                                value={formik.values.rating}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="publishDate">Рік</FormLabel>
+                            <TextField
+                                name="publishDate"
+                                placeholder="Рік публікацї"
+                                autoComplete="publishDate"
+                                fullWidth
+                                type="number"
+                                variant="outlined"
+                                value={formik.values.publishDate}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {getError("publishDate")}
                         </FormControl>
 
                         <Button
@@ -189,5 +211,6 @@ const AuthorCreateForm = () => {
             </SignInContainer>
         </Box>
     );
-}
-export default AuthorCreateForm;
+};
+
+export default BookCreateForm;

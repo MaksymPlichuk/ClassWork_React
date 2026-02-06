@@ -7,12 +7,9 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import { object, string, number } from "yup";
-import { useNavigate } from "react-router";
+import { replace, useNavigate, useParams } from "react-router";
+import { useEffect, useState } from "react";
 import axios from "axios";
-
-
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -34,8 +31,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
-    height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
-    minHeight: "100%",
+    minHeight: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
     padding: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
         padding: theme.spacing(4),
@@ -56,56 +52,100 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-const initValues = {
-    name: "",
-    birth_date: "",
-    image: "",
-};
 
-const baseURL = import.meta.env.VITE_AUTHORS_URL;
-const AuthorCreateForm = () => {
-    const navigate = useNavigate();
+const AuthorUpdateForm = () => {
 
-    const handleSubmit = async (newAuthor) => {
-        console.log(newAuthor);
+    const [formValues, setFormValues] = useState({
+        name: "",
+        birth_date: "",
+        image: "",
+    })
 
-        const data = {
-            name: newAuthor.name,
-            image: newAuthor.image,
-            birthDate: newAuthor.birth_date
-        };
-        delete newAuthor.birth_date
-
-        try {
-            const resp = await axios.post(baseURL, data);
-            if (resp.status == 200) {
-                console.log("author Added");
-                navigate("/authors")
-            }
-        } catch (error) {
-            console.warn(error);
-        }
-
+    function onChangeHandle(event) {
+        const { name, value } = event.target;
+        setFormValues({ ...formValues, [name]: value });
     }
 
+    const baseURL = import.meta.env.VITE_AUTHORS_URL;
+    const [errors, setErrors] = useState({})
+    const navigate = useNavigate();
+    const { id } = useParams();
+
+    const validate = () => {
+        const validateErros = {};
+        let result = true;
+
+        if (formValues.name.length == 0) {
+            validateErros.name = "Обов'язкове поле";
+            result = false;
+        } else if (formValues.name.length > 100) {
+            validateErros.name = "Максимальна довжина 100 символів";
+            result = false;
+        }
+
+        const birthdayRegex = /\d{4}-\d{2}-\d{2}/;
+        if (formValues.birth_date.length == 0) {
+            validateErros.birth_date = "Обов'язкове поле";
+            result = false;
+        } else if (!birthdayRegex.test(formValues.birth_date)) {
+            validateErros.birth_date = "Тип введення yyyy-MM-dd";
+            result = false;
+        }
+
+        return { result: result, errors: validateErros }
+    }
+
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const validateRes = validate();
+
+        if (!validateRes.result) {
+            setErrors(validateRes.errors);
+            return;
+        } else {
+            setErrors({});
+        }
+
+        try {
+            const resp = await axios.put(baseURL, formValues);
+            const { status } = resp
+            console.log(resp);
+            if (status == 200) {
+                navigate("/authors")
+            }
+
+        } catch (error) {
+            console.log(error);
+
+        }
+        
+    };
+
     const getError = (prop) => {
-        return formik.touched[prop] && formik.errors[prop] ? (
+        return errors[prop] ? (
             <Typography sx={{ mx: 1, color: "red" }} variant="h7">
-                {formik.errors[prop]}
+                {errors[prop]}
             </Typography>
         ) : null;
     };
 
-    const validationScheme = object({
-        name: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),
-        birth_date: string().required("Обов'язкове поле").matches(/\d{4}-\d{2}-\d{2}/, "Тип введення yyyy-MM-dd")
-    });
 
-    const formik = useFormik({
-        initialValues: initValues,
-        onSubmit: handleSubmit,
-        validationSchema: validationScheme,
-    });
+    useEffect(() => {
+        async function fetchAuthors() {
+            const resp = await axios.get(`${baseURL}/${id}`)
+            const { data, status } = resp;
+
+            if (status == 200) {
+                console.warn(data);
+                setFormValues(data.data)
+            } else {
+                navigate("/authors", { replace: true })
+            }
+        }
+        fetchAuthors();
+    }, [])
 
     return (
         <Box>
@@ -119,11 +159,11 @@ const AuthorCreateForm = () => {
                             fontSize: "clamp(2rem, 10vw, 2.15rem)",
                         }}
                     >
-                        Додавання автора
+                        Редагування автора
                     </Typography>
                     <Box
                         component="form"
-                        onSubmit={formik.handleSubmit}
+                        onSubmit={handleSubmit}
                         sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -140,9 +180,8 @@ const AuthorCreateForm = () => {
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formik.values.name}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
+                                value={formValues.name}
+                                onChange={onChangeHandle}
                             />
                             {getError("name")}
                         </FormControl>
@@ -155,12 +194,12 @@ const AuthorCreateForm = () => {
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formik.values.birth_date}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
+                                value={formValues.birth_date}
+                                onChange={onChangeHandle}
                             />
                             {getError("birth_date")}
                         </FormControl>
+
                         <FormControl>
                             <FormLabel htmlFor="image">Фото</FormLabel>
                             <TextField
@@ -170,9 +209,8 @@ const AuthorCreateForm = () => {
                                 fullWidth
                                 type="text"
                                 variant="outlined"
-                                value={formik.values.image}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
+                                value={formValues.image}
+                                onChange={onChangeHandle}
                             />
                         </FormControl>
 
@@ -190,4 +228,4 @@ const AuthorCreateForm = () => {
         </Box>
     );
 }
-export default AuthorCreateForm;
+export default AuthorUpdateForm;

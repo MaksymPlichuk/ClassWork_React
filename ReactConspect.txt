@@ -6163,7 +6163,62 @@ rootReducer.js
 		
 		
 		
-		
+----------------------------------------------
+15_	GoogleAuth Totstify
+
+		//breakpoint які задають ширину сітку для певного розміру екрану
+<Grid size={{sm: 12, md: 6, 1g: 4, x1: 4}} key={index}>
+	<BookCard book={b} />
+</Grid>
 
 
+Totistify створюємо Provider
 
+	Налаштовуємо на сайті ToastContainer
+			fkhadra.github.io/react-toastify/introduction/
+
+
+const TostifyProvider = () => {
+return (
+	<ToastContainer>...	-- загальний для всіх налаштування
+	 );
+}
+export default ToastifyProvider;
+
+	
+	//імпорт коомпонента
+
+import { toast } from "react-toastify";
+	toats.success("message")
+
+
+GOOGLE API authorise
+
+ 1. йдемо до google cloud console
+ 2. OAuth consent
+ 3. Credentials
+ 4. Create crendentials OAuth client ID
+
+огортаємо login form у  
+	<Google0AuthProvider clientId = {googleClientId}>
+ 
+ <GoogleLogin
+	onSuccess={succesAuth}
+	onError= errorAuth
+/>
+							jwt token
+	const succesAuth = ({crendential}) => {..}
+
+jwt decode	-- ставимо бібліотеку для декодування 
+
+ const userData = jwtDecode(credential)	-- перетворює на json
+
+краще записувати creds у jwt для бекенда
+				який буде записуватись у cookies
+
+
+contst LoginPageByGoogle = () => ()	-- зразу return html
+							{}	-- требв писати return
+							
+							
+							
