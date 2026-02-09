@@ -5,10 +5,12 @@ import { useState, useEffect } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Link } from "react-router";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const BookListPage = ({ role }) => {
-    const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(true)
+
+    const { isLoaded, books } = useSelector(state => state.book);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchBooks();
@@ -16,8 +18,8 @@ const BookListPage = ({ role }) => {
 
     const baseUrl = import.meta.env.VITE_BOOKS_URL;
     async function fetchBooks() {
-        const pageSize = 5;
-        const page = 1;
+        const pageSize = 20;
+        const page = 6;
         const url = `${baseUrl}?page=${page}&page_size=${pageSize}`
 
         console.log(url)
@@ -39,8 +41,9 @@ const BookListPage = ({ role }) => {
                 };
                 booksData.push(formated);
             }
-            setBooks(booksData);
-            setLoading(false);
+
+            dispatch({ type: "loadBooks", payload: booksData })
+
         } else {
             alert("Some Error")
         }
@@ -48,7 +51,7 @@ const BookListPage = ({ role }) => {
 
     const removeBook = async (id) => {
         const newList = books.filter(b => b.id !== id)
-        setBooks(newList);
+        dispatch({ type: "deleteBook", payload: newList });
         try {
             await axios.delete(`${baseUrl}/${id}`);
         }
@@ -68,7 +71,7 @@ const BookListPage = ({ role }) => {
         }
     }
 
-    if (loading) {
+    if (!isLoaded) {
         return (
             <Box sx={{ display: "flex", justifyContent: "center", mt: 5, flexDirection: "column", alignItems: "center" }}>
                 <Typography variant="h5">Loading Data...</Typography>

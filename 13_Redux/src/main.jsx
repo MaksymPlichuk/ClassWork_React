@@ -4,11 +4,13 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router'
 import { AuthProvider } from './pages/context/AuthContext.jsx'
-import { ThemeContext } from '@emotion/react'
 import { ThemeContextProvider } from './pages/context/ThemeContext.jsx'
+import { store } from './store/store.js'
+import { Provider } from 'react-redux'
 
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
+  <Provider store={store}>
     <BrowserRouter>
       <ThemeContextProvider>
         <AuthProvider>
@@ -16,5 +18,6 @@ createRoot(document.getElementById('root')).render(
         </AuthProvider>
       </ThemeContextProvider>
     </BrowserRouter>
+  </Provider>
   //</StrictMode>,
 )

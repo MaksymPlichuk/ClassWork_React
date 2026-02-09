@@ -5869,20 +5869,26 @@ const deleteBook = async (id) => {
 		сховище контекстів, до якого матимуть доступ всі компоненти
 		
 		
- payload -- дані які хочемо ввести
  
  UI (btn click)--> event handler --> Dispatcher генерує (Action {type,payload})
 	--> Store (state всіх контекстів) --> Reducer (по типу 
 	контекста змію state) логіка яка змінює State(об'єкт дані з всього redux)
 		--> Reducer змінює State
 
-	Reducer контроллер state
 
-const state = {
+	payload -- дані які хочемо ввести
+ type	-- яку дію зробити з payload
+	
+	Store state	--	state усіх context через нього витягуватимемо усі необхідні данні	|	схожий за можливостям на useState()
+	Reducer	-- типу context (тема авторизація книги автори) змінюють state
+
+
+
+const oldState = {
 		balance:0,
 		pinCode:1345,
 	}
-const newState = { ...state, balance: 10 ; }
+const newState = { ...oldState, balance: 10 ; }	--	store автоматично віддає старі данні щоб старі так і залишились
 
 
  Головне правильно прописати Reducer Store
@@ -5894,16 +5900,19 @@ npm install @reduxjs/toolkit	-- дає RTK queary
 npm install react-redux
 
 
-створ папку store	--	е налаштування reducer store
-	==store.js
+
+створ папку store	--  налаштування reducer store
+	./store/store.js
 	
 import { configureStore } from "@reduxjs/toolkit";
 
-	export const store = configureStore({
-		reducer: {}
+	export const store = configureStore({	-- об'єкт з налаштуваннями
+		reducer: {}	-- reducer у якому будуть інші reducers
 })
 
-	==main.jsx	 підключаємо store
+
+
+	./main.jsx	 підключаємо store
 	
 import { store } from "./store/store.js";
 import { Provider } from "react-redux";
@@ -5913,12 +5922,16 @@ import { Provider } from "react-redux";
 	</Provider>
 
 
+	кожен Reducer -- має свій маленький state які об'єднуються у великий 
 Reducer - manager його state - його категорія
 	
+
 
 store/reducers/bookReducer/bookReducer.js
 
 JSX -- писати HTML у JS коді
+
+	компоненти з великої, функції з малої літери 
 
  кожен Reducer приймає (state,action)
  
@@ -5932,41 +5945,55 @@ JSX -- писати HTML у JS коді
 		isLoaded: false
  }	
 						 //початкове значення
-export const bookReducer = (state = initState, action) => {
+export const bookReducer = (state = initState, action) => {		-- state = initState потрібно для створення оскільки state не буде на початку
 
 }	-- буде змінювати initState
 
 
 
 
- ==store.js
+ ==store.js		--додаємо до reducer {} наш новий bookReducer
 
-import { configureStore } from "@reduxjs/toolkit";
 import { bookReducer } from "./reducers/bookReducer/bookReducer";
 
 
  export const store = configureStore { -- створюємо сховище і передаємо налаштквання
 		
-		reducer: rootReducer
+		reducer: {
+			book: bookReducer	--	але помилка бо треба 1 reducer тому створ rootReducer
+		}
+		
+		
+		після створення RootRecuder
+			reducer: rootReducer
 }	
+
 
 
    store/reducers/rootReducer	-- список всіх reducer
 
 створюємо rootReducer	--	reducer який головний у якому інші він об'єднує всіх
 
+
+
 import { combineReducers } from "@reduxjs/toolkit"
 
-  export const rootReducer combineReducers({
-	//редюсери
-	
+  export const rootReducer = combineReducers({
+
   	 book: bookReducer	--	По цій назві вичитуються Reducers
+	 
   })
+
+
+
 
 
 redux devTools	--	розширення для тестування Redux
 
 https://chromewebstore.google.com/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=ru&pli=1
+
+	-Якщо все добре то з'явиться @@init та перший state (у нас це book) з значеннями від initState
+
 
 
 	==bookReducer.js
@@ -5978,12 +6005,15 @@ const action = {	-- об'єкт
 	
 export const bookReducer = (state = initState, action) => {
 	switch(action.type) {
-		case "loadBooks":
+	
+		case "loadBooks":								//данні які приходять ззовні
 			return {...state, isLoaded: true, books: action.payload };
+			
 	default:
 		return state;
 	}	
 }
+
 
 
 	==BookListPage
@@ -5992,26 +6022,35 @@ import (useDispatch, useSelector) from "react-redux";
 
 	useDispatch	-- редагування сховища
 
-const dispatch = useDispatch('loadBooks')	-- функція яка генерує action
+const dispatch = useDispatch()	-- функція яка генерує action
 
 fetchBooks {..
 	setBooks(booksData)
 	
-	dispatch { type: "loadBooks", payload: booksData };	--	запис у store нового state
+			//як id розуміє до якого reducer
+	dispatch ( { type: "loadBooks", payload: booksData } );	--	запис у store нового state
 }
+
+
+
+context -- доступ всім компонентам до state
+	redux	--	сховище контекстів
 
 useSelector -- для отримання з store
 useDispatch -- для запису у store
 
 
-// отримання масиву книг та стану завантаження
 
+
+										//з якого reducer беремо данні (назва у rootReducer)
 const [ books, isLoaded ] = useSelector(state => state.book);
 
 
 
 case "deleteBook":
-	return {...state, books: 	//ВИДАЛЕННЯ		//самі вибираємл що передати у payload
+	return {...state, books:
+
+	//попередні данні до зміни					//ВИДАЛЕННЯ		//самі вибираємл що передати у payload
 		state.books.filter(b=> b.id != action.payload) };
 
 
@@ -6019,12 +6058,29 @@ case "deleteBook":
 const deleteClickHandle = async () => {
 	const booksUrl = import.meta.env.VITE_BOOKS_URL;
 	try {
+	
 		await axios.delete(${booksUrl}/${id}');		--	видаляємо з бекенда
+
+
 		dispatch { type: "deleteBook", payload: book.id};	-- видаляємо з state
 		
 	dispatch { type: "updateBook", payload: newBook });	
 		
+	
+
+case "updateBook":
+	return {
+		...state,	//бере попередні данні до зміни	і вибирає всі крім переданої
+		books: [...state.books.filter( (b) => b.id != action.payload.id), action.payload ]	-- масив без видаленого id + новиа книга (видалилась стара книга додалась оновлена версія)
+	}
 		
+//ЗРУЧНІШЕ валідація у Компоненті
+	books: action.payload
+	
+	
+	
+ локальні useState() немає сенсу переносити у Redux		
+				
 Redux	--	глобальний useState на всі компоненти щоб завжди була сама остання інформація	
 		
 ----------------------------------------------
