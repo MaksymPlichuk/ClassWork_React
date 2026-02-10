@@ -1,17 +1,22 @@
-import { Box, Grid,IconButton } from "@mui/material";
+import { Box, Grid, IconButton, Typography, CircularProgress } from "@mui/material";
 import AuthorCard from "./AuthorCard";
 import authorsJson from "./authors.json"
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const AuthorListPage = () => {
-    const [authors, setAuthors] = useState([]);
+
+    const { authors, isLoaded } = useSelector(state => state.author);
+    const dispatch = useDispatch();
     const baseURL = import.meta.env.VITE_AUTHORS_URL;
 
     useEffect(() => {
-        fetchAuthors();
+        if (!isLoaded) {
+            fetchAuthors();
+        }
     }, [])
 
     async function fetchAuthors() {
@@ -23,40 +28,26 @@ const AuthorListPage = () => {
             for (const author of data.data.items) {
                 newAuthors.push(author)
             }
-            setAuthors(newAuthors);
+            dispatch({ type: "loadAuthors", payload: newAuthors });
             console.log(newAuthors);
         }
     }
-
-    const removeAuthor = async (id) => {
-        const newList = authors.filter(b => b.id !== id)
-        setAuthors(newList);
-        try {
-           await axios.delete(`${baseURL}/${id}`);
-        } catch (error) {
-            console.warn(error);
-        }
+    if (!isLoaded) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 5, flexDirection: "column", alignItems: "center" }}>
+                <Typography variant="h5">Loading Data...</Typography>
+                <CircularProgress enableTrackSlot size="3rem" sx={{ mt: 5 }} />
+            </Box>
+        );
     }
-    const setFavorite = (id, state) => {
-        const newList = [...authors];
-
-        const index = newList.findIndex(b => b.id === id);
-        if (index !== 1) {
-            newList[index].isFavorite = state;
-            setAuthors(newList);
-            localStorage.setItem("authors", JSON.stringify(newList));
-        }
-    }
-
-
     return (
         <Box
             sx={{ display: "flex", alignItems: "center", flexDirection: "column", }}>
 
             <Grid container spacing={2} mx="100px" my="50px">
-                {authors.map((b) => (
-                    <Grid size={3} key={b.id}>
-                        <AuthorCard author={b} removeAuthorCallBack={removeAuthor} setFavoriteCallBack={setFavorite} />
+                {authors.map((b, index) => (
+                    <Grid size={3} key={index}>
+                        <AuthorCard author={b} />
                     </Grid>
                 ))}
                 <Grid size={authors.length % 4 == 0 ? 12 : 3} >

@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import { replace, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -54,7 +55,6 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 
 const AuthorUpdateForm = () => {
-
     const [formValues, setFormValues] = useState({
         name: "",
         birth_date: "",
@@ -70,6 +70,10 @@ const AuthorUpdateForm = () => {
     const [errors, setErrors] = useState({})
     const navigate = useNavigate();
     const { id } = useParams();
+
+    const dispatch = useDispatch();
+    const { authors } = useSelector(state => state.author)
+
 
     const validate = () => {
         const validateErros = {};
@@ -112,6 +116,12 @@ const AuthorUpdateForm = () => {
             const resp = await axios.put(baseURL, formValues);
             const { status } = resp
             console.log(resp);
+
+            const newAuthors = authors.filter((a) => a.id != id);
+            newAuthors[id] = formValues;
+
+            dispatch({ type: "updateAuthor", payload: newAuthors })
+
             if (status == 200) {
                 navigate("/authors")
             }
@@ -120,7 +130,7 @@ const AuthorUpdateForm = () => {
             console.log(error);
 
         }
-        
+
     };
 
     const getError = (prop) => {

@@ -13,7 +13,9 @@ const BookListPage = ({ role }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchBooks();
+        if (!isLoaded) {
+            fetchBooks();
+        }
     }, [])
 
     const baseUrl = import.meta.env.VITE_BOOKS_URL;
@@ -49,27 +51,6 @@ const BookListPage = ({ role }) => {
         }
     }
 
-    const removeBook = async (id) => {
-        const newList = books.filter(b => b.id !== id)
-        dispatch({ type: "deleteBook", payload: newList });
-        try {
-            await axios.delete(`${baseUrl}/${id}`);
-        }
-        catch (err) {
-            console.log(err);
-
-        }
-        await fetchBooks();
-    }
-    const setFavorite = (id, state) => {
-        const newList = [...books];
-        const index = newList.findIndex(b => b.id === id);
-        if (index !== 1) {
-            newList[index].isFavorite = state;
-            setBooks(newList);
-            localStorage.setItem("books", JSON.stringify(newList));
-        }
-    }
 
     if (!isLoaded) {
         return (
@@ -85,9 +66,9 @@ const BookListPage = ({ role }) => {
             sx={{ display: "flex", alignItems: "center", flexDirection: "column", }}>
 
             <Grid container spacing={2} mx="100px" my="50px">
-                {books.map((b) => (
-                    <Grid size={3} key={b.id}>
-                        <BookCard book={b} removeBookCallBack={removeBook} setFavoriteCallBack={setFavorite} role={role} b={b} />
+                {books.map((b,index) => (
+                    <Grid size={3} key={index}>
+                        <BookCard book={b} role={role}/>
                     </Grid>
                 ))}
                 <Grid size={books.length % 4 == 0 ? 12 : 3} >

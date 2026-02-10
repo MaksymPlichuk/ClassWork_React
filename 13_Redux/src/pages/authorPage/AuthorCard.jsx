@@ -14,18 +14,25 @@ import { Link } from 'react-router';
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
-const AuthorCard = ({ author, removeAuthorCallBack, setFavoriteCallBack }) => {
+const AuthorCard = ({ author }) => {
+    const baseURL = import.meta.env.VITE_AUTHORS_URL;
+    const dispatch = useDispatch();
     const [isFavorite, setIsFavorite] = useState(author.isFavorite);
 
-    const removeAuthorHandle = () => {
-        removeAuthorCallBack(author.id)
+    const removeAuthorHandle = async () => {
+        try {
+            await axios.delete(`${baseURL}/${author.id}`);
+            dispatch({ type: "deleteAuthor", payload: author.id })
+        } catch (error) {
+            console.warn(error);
+        }
     }
     const setFavoriteHandle = () => {
         const favoriteState = !isFavorite;
         setIsFavorite(favoriteState);
-
-        setFavoriteCallBack(author.id, favoriteState)
     }
 
     return (

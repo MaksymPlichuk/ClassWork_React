@@ -8,9 +8,10 @@ import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
-import { object, string, number } from "yup";
+import { object, string, number, date } from "yup";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 
 
@@ -63,7 +64,10 @@ const initValues = {
 };
 
 const baseURL = import.meta.env.VITE_AUTHORS_URL;
+
 const AuthorCreateForm = () => {
+
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleSubmit = async (newAuthor) => {
@@ -72,14 +76,15 @@ const AuthorCreateForm = () => {
         const data = {
             name: newAuthor.name,
             image: newAuthor.image,
-            birthDate: newAuthor.birth_date
+            birthDate: newAuthor.birth_date,
+            birth_date: newAuthor.birth_date    //щоб день народження зразу рендерився для Reducer
         };
-        delete newAuthor.birth_date
 
         try {
             const resp = await axios.post(baseURL, data);
             if (resp.status == 200) {
                 console.log("author Added");
+                dispatch({ type: "createAuthor", payload: data })
                 navigate("/authors")
             }
         } catch (error) {

@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import { replace, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -53,6 +54,9 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const BookUpdateForm = () => {
+
+    const dispatch = useDispatch();
+    const { books } = useSelector(state => state.book);
 
     const [formValues, setFormValues] = useState({
         title: "",
@@ -118,8 +122,12 @@ const BookUpdateForm = () => {
         //     setErrors({});
         // }
 
+        const newBooks = books.filter((b) => b.id != id);
+        newBooks[id] = formValues;
 
         const response = await axios.put(baseURL, formValues)
+        dispatch({ type: "updateBook", payload: newBooks });
+
         const { status } = response;
         if (status == 200) {
             navigate("/books")
