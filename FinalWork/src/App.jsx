@@ -14,6 +14,7 @@ import { lightTheme } from './pages/theme/lightTheme'
 import CarListPage from './pages/carPage/CarListPage'
 import CarCreateForm from './pages/carPage/CarCreateForm'
 import CarUpdateForm from './pages/carPage/CarUpdateForm'
+import CarDescription from './pages/carPage/CarDescription'
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
               <Route index element={<CarListPage />} />
               <Route path='create' element={<CarCreateForm/>}/>
               <Route path='update/:id' element={<CarUpdateForm/>}/>
+              <Route path='description/:id' element={<CarDescription/>}/>
             </Route>
 
             <Route path='*' element={<ErrorPage />} />

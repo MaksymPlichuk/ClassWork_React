@@ -156,14 +156,14 @@ const Navbar = () => {
                                 Автомобілі
                             </Button>
                         </Link>
-                        <Link to="/manufacture">
+                        {/* <Link to="/manufacture">
                             <Button
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: "white", display: "block" }}
                             >
                                 Виробники
                             </Button>
-                        </Link>
+                        </Link> */}
                     </Box>
 
                     <Box sx={{ flexGrow: 0, mx: 5 }}>
@@ -187,12 +187,12 @@ const Navbar = () => {
                             </IconButton>
                         </Tooltip> :
                             <>
-                                <Link to="/login">
+                                {/* <Link to="/login">
                                     <Button variant="contained" sx={{ mx: "1em" }}>Login</Button>
                                 </Link>
                                 <Link to="/register">
                                     <Button variant="contained" sx={{ mx: "1em" }}>Sign Up</Button>
-                                </Link>
+                                </Link> */}
                             </>
                         }
                         <Menu

@@ -43,20 +43,26 @@ const CarCard = ({ car }) => {
                 }
                 title={car.name}
             />
-            <CardMedia
-                sx={{ objectFit: "contain" }}
-                component="img"
-                height="350"
-                image={
-                    car.image ? car.image : "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-18055.jpg"
-                }
-                alt={car.name}
-            />
+            <Link to={`description/${car.id}`}>
+                <CardMedia
+                    sx={{ objectFit: "contain" }}
+                    component="img"
+                    height="350"
+                    image={
+                        car.image ? car.image : "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-18055.jpg"
+                    }
+                    alt={car.name}
+                />
+            </Link>
             <CardContent>
-                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                        {car.price}$
-                        <span style={{margin: 10}}>{car.year}</span>
-                    </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    {car.price}$
+                    <span style={{ margin: 10 }}>{car.year}</span>
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    <span >Volume: {car.volume}L</span>
+                    <span style={{ margin: 10 }}>{car.manufacture?.name}</span>
+                </Typography>
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton
@@ -70,7 +76,7 @@ const CarCard = ({ car }) => {
                     </IconButton>
                 </Link>
             </CardActions>
-        </Card>
+        </Card >
     );
 }
 export default CarCard;
